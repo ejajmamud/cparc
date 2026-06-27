@@ -19,7 +19,7 @@ class CparcSeeder extends Seeder
     {
         \Schema::disableForeignKeyConstraints();
         // ── Banner Images ──────────────────────────────────────────────
-        BannerImage::truncate();
+        BannerImage::query()->delete();
         $bannerFiles = ['event_1.jpeg','event_11.jpeg','event_12.jpeg','event_13.jpeg','event_14.jpeg','event_15.jpeg'];
         foreach ($bannerFiles as $i => $file) {
             BannerImage::create([
@@ -31,7 +31,7 @@ class CparcSeeder extends Seeder
         }
 
         // ── Notices ────────────────────────────────────────────────────
-        Notice::truncate();
+        Notice::query()->delete();
         $notices = [
             ['title' => 'Annual General Meeting 2025 – Notice to All Members',
              'title_bn' => 'বার্ষিক সাধারণ সভা ২০২৫ – সকল সদস্যদের প্রতি বিজ্ঞপ্তি',
@@ -70,7 +70,7 @@ class CparcSeeder extends Seeder
         }
 
         // ── News ───────────────────────────────────────────────────────
-        NewsArticle::truncate();
+        NewsArticle::query()->delete();
         $news = [
             ['title' => 'CPRC Wins Best Port Club Award 2025 at National Level',
              'title_bn' => 'জাতীয় পর্যায়ে সেরা বন্দর ক্লাব পুরস্কার ২০২৫ পেল সিপিআরসি', 'days' => 3],
@@ -98,7 +98,7 @@ class CparcSeeder extends Seeder
         }
 
         // ── Events ─────────────────────────────────────────────────────
-        Event::truncate();
+        Event::query()->delete();
         $events = [
             ['title' => 'Annual General Meeting 2025', 'title_bn' => 'বার্ষিক সাধারণ সভা ২০২৫',
              'date' => 15, 'venue' => 'Main Auditorium, CPRC', 'venue_bn' => 'প্রধান অডিটোরিয়াম, সিপিআরসি', 'future' => true],
@@ -132,7 +132,7 @@ class CparcSeeder extends Seeder
         }
 
         // ── Members (Real names from directory) ────────────────────────
-        Member::truncate();
+        Member::query()->delete();
         $members = [
             // President
             ['name' => 'Rafiul Alam',              'name_bn' => 'রাফিউল আলম',
@@ -208,8 +208,8 @@ class CparcSeeder extends Seeder
 
         // ── Gallery ────────────────────────────────────────────────────
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        GalleryPhoto::truncate();
-        GalleryAlbum::truncate();
+        GalleryPhoto::query()->delete();
+        GalleryAlbum::query()->delete();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $album = GalleryAlbum::create([
@@ -256,7 +256,7 @@ class CparcSeeder extends Seeder
         }
 
         // ── Packages ───────────────────────────────────────────────────
-        Package::truncate();
+        Package::query()->delete();
         $packages = [
             [
                 'name'           => 'Half Day Package',
