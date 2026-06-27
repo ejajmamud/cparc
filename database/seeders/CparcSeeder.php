@@ -17,6 +17,7 @@ class CparcSeeder extends Seeder
 {
     public function run(): void
     {
+        \Schema::disableForeignKeyConstraints();
         // ── Banner Images ──────────────────────────────────────────────
         BannerImage::truncate();
         $bannerFiles = ['event_1.jpeg','event_11.jpeg','event_12.jpeg','event_13.jpeg','event_14.jpeg','event_15.jpeg'];
@@ -373,6 +374,7 @@ class CparcSeeder extends Seeder
             Package::create($pkg);
         }
 
+        \Schema::enableForeignKeyConstraints();
         $this->command->info('CPRC seed data inserted successfully. (' . count($members) . ' members, ' . count($packages) . ' packages)');
     }
 }
