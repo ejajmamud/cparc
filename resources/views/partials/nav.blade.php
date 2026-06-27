@@ -1,10 +1,26 @@
 <section class="widget menus-expandable-widget max-view">
   <div class="menus-widget-container" style="--home-label:'Home';">
     <section class="widget menu-widget">
-      <span id="menu-toggle" class="hamburger-menu-block">
-        <icon class="hamburger-menu ph ph-list"></icon>
-        <span>{{ __('site.home') }}</span>
-      </span>
+      {{-- Standalone Mobile Nav Bar --}}
+      <div class="cprc-mobile-nav-bar">
+        <a href="{{ url('/') }}" class="cprc-mobile-brand">
+          <img src="{{ asset('images/club/logo.jpeg') }}" alt="Logo" class="cprc-mobile-logo">
+          <span class="cprc-mobile-title">{{ app()->getLocale() === 'bn' ? 'সিপিআরসি' : 'CPRC' }}</span>
+        </a>
+        <div class="cprc-mobile-right">
+          {{-- Language Switcher for Mobile --}}
+          <div class="mobile-lang-switcher">
+            <a href="{{ route('lang.switch', 'bn') }}" class="mobile-lang-btn {{ app()->getLocale() === 'bn' ? 'active' : '' }}">বাংলা</a>
+            <span class="lang-sep">|</span>
+            <a href="{{ route('lang.switch', 'en') }}" class="mobile-lang-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</a>
+          </div>
+          {{-- Hamburger Toggle Icon --}}
+          <span id="menu-toggle" class="hamburger-menu-block">
+            <i class="ph ph-list hamburger-icon"></i>
+          </span>
+        </div>
+      </div>
+
       <ul class="menu-list menu-parent-unordered-list cprc-nav-center">
 
         @if(!request()->routeIs('home'))
@@ -15,7 +31,9 @@
         </li>
         @endif
         <li class="megamenu-link">
-          <a class="menu-parent-list-link home-link" href="{{ url('/') }}" title="{{ __('site.home') }}"></a>
+          <a class="menu-parent-list-link home-link-vector" href="{{ url('/') }}" title="{{ __('site.home') }}" style="display: flex; align-items: center; justify-content: center; height: 100%; padding: 0 16px;">
+            <i class="ph ph-house" style="font-size: 20px; color: #ffffff;"></i>
+          </a>
         </li>
 
         <li class="megamenu-link menu-parent-list">

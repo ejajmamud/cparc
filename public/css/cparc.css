@@ -840,3 +840,8 @@ ul.pagination li.disabled span {
   border-color: #e5e7eb;
   cursor: not-allowed;
 }
+
+/* Hide mobile standalone nav on desktop */
+.cprc-mobile-nav-bar {
+  display: none !important;
+}
