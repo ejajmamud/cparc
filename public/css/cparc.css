@@ -152,25 +152,37 @@
   align-items: center !important;
 }
 .nav-logo-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 12px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 12px !important;
+  flex: 0 0 40px !important;
+  width: 40px !important;
 }
 .nav-logo-img {
-  height: 38px;
-  width: 38px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  height: 38px !important;
+  width: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  transition: border-color 0.2s ease, transform 0.2s ease !important;
 }
 .nav-logo-img:hover {
-  border-color: #fff;
-  transform: scale(1.06);
+  border-color: #fff !important;
+  transform: scale(1.06) !important;
 }
 .menu-widget .home-link {
   background-image: url("../template/site-assets/images/home_dark.png");
+}
+
+/* Fix news ticker "see all" button contrast */
+.news-card-widget-scroll-container .all-btn a,
+.news-card-widget-scroll-container .all-btn a:visited {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
 }
 
 /* ── WHATSAPP FLOATING BUTTON ── */

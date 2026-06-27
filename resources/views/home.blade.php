@@ -160,12 +160,14 @@
           <section class="widget news-card-widget">
             <div class="news-card-widget-scroll-container">
               <div class="news-card-widget-news-title">{{ __('site.latest_news') }}</div>
-              <div class="news-card-widget-ticker">
-                @foreach($latestNews as $item)
-                  <a href="{{ route('news.show', $item->slug) }}" class="new-content scroll-text">
-                    {{ app()->getLocale() === 'bn' && $item->title_bn ? $item->title_bn : $item->title }}
-                  </a>
-                @endforeach
+              <div class="news-card-widget-ticker" style="display: flex; align-items: center; overflow: hidden;">
+                <marquee behavior="scroll" direction="left" scrollamount="4" onmouseover="this.stop();" onmouseout="this.start();" style="width: 100%; vertical-align: middle;">
+                  @foreach($latestNews as $item)
+                    <a href="{{ route('news.show', $item->slug) }}" class="new-content" style="display: inline-block; margin-right: 40px; color: #333; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
+                      {{ app()->getLocale() === 'bn' && $item->title_bn ? $item->title_bn : $item->title }}
+                    </a>
+                  @endforeach
+                </marquee>
               </div>
               <div class="all-btn"><a href="{{ route('news.index') }}">{{ __('site.see_all') }} <i class="ph ph-arrow-right"></i></a></div>
             </div>
