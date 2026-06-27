@@ -146,8 +146,8 @@
   <link rel="stylesheet" href="{{ asset('template/widget-assets/css/BlockWidget.css') }}">
 
   {{-- CPRC custom --}}
-  <link rel="stylesheet" href="{{ asset('css/cparc.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/cparc-mobile.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/cparc.css') }}?v={{ filemtime(public_path('css/cparc.css')) }}">
+  <link rel="stylesheet" href="{{ asset('css/cparc-mobile.css') }}?v={{ filemtime(public_path('css/cparc-mobile.css')) }}">
 
   @stack('styles')
 

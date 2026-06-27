@@ -7,11 +7,13 @@
       </span>
       <ul class="menu-list menu-parent-unordered-list cprc-nav-center">
 
+        @if(!request()->routeIs('home'))
         <li class="nav-logo-item">
           <a href="{{ url('/') }}" title="{{ __('site.club_name') }}" style="display: flex; align-items: center;">
             <img src="{{ asset('images/club/logo.jpeg') }}" alt="Logo" class="nav-logo-img">
           </a>
         </li>
+        @endif
         <li class="megamenu-link">
           <a class="menu-parent-list-link home-link" href="{{ url('/') }}" title="{{ __('site.home') }}"></a>
         </li>
