@@ -117,9 +117,9 @@
 .header-right-tools {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
 }
-.header-clock { font-size: 0.78rem; color: #888; white-space: nowrap; }
+.header-clock { font-size: 0.78rem; color: rgba(255, 255, 255, 0.9); white-space: nowrap; }
 .header-icon-link {
-  color: var(--color-primary-bg); font-size: 18px;
+  color: #fff; font-size: 18px;
   display: flex; align-items: center;
 }
 .header-book-btn {
@@ -143,12 +143,31 @@
   transition: color 0.15s;
 }
 .lang-btn:hover { color: var(--color-primary-bg); }
-.lang-active { color: var(--color-primary-bg) !important; text-decoration: underline; }
+.lang-active { color: var(--color-primary-bg) !important; text-decoration: none !important; font-weight: 800; }
 .lang-sep { color: #ccc; font-size: 0.7rem; }
 
 /* ── NAV – CENTER ALIGNED ── */
 .menu-widget .menu-parent-unordered-list.cprc-nav-center {
   justify-content: center !important;
+  align-items: center !important;
+}
+.nav-logo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+.nav-logo-img {
+  height: 38px;
+  width: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.nav-logo-img:hover {
+  border-color: #fff;
+  transform: scale(1.06);
 }
 .menu-widget .home-link {
   background-image: url("../template/site-assets/images/home_dark.png");
