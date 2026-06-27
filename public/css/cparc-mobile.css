@@ -1,0 +1,137 @@
+/* ================================================================
+   CPRC Mobile Stylesheet – Standalone responsive rules
+   ================================================================ */
+
+/* ── TABLET: 601px – 1000px ── */
+@media (max-width: 1000px) {
+  .cprc-home-wrapper { flex-direction: column; padding: var(--spacing-medium); gap: var(--spacing-medium); }
+  .cprc-sidebar-col { flex: none; width: 100%; }
+  .cprc-sidebar-persons-row { flex-direction: row; gap: var(--spacing-medium); }
+  .cprc-sidebar-persons-row .cprc-sidebar-widget { flex: 1; margin-bottom: 0; }
+  .cprc-pkg-grid { grid-template-columns: repeat(3, 1fr); }
+  .cprc-services-grid { grid-template-columns: repeat(3, 1fr); }
+  .cprc-gallery-grid { grid-template-columns: repeat(3, 1fr); }
+  .cprc-footer-main { grid-template-columns: 1fr 1fr; gap: 24px; }
+  /* Hero */
+  .cprc-hero-slider { height: 400px; }
+  .cprc-hero-overlay { padding: 0 32px 32px; }
+  .cprc-hero-name { font-size: 1.5rem; }
+}
+
+/* ── MOBILE: up to 600px ── */
+@media (max-width: 600px) {
+  body { font-size: 14px; }
+
+  /* Hero slider */
+  .cprc-hero-slider { height: 280px; }
+  .cprc-hero-overlay { padding: 0 16px 24px; gap: 16px; }
+  .cprc-hero-logo { width: 56px; height: 56px; }
+  .cprc-hero-name { font-size: 1.05rem; }
+  .cprc-hero-auth { font-size: 0.78rem; }
+  .cprc-hero-est { display: none; }
+  .cprc-hero-btn { padding: 8px 16px; font-size: 0.82rem; }
+  .cprc-hero-dots { bottom: 10px; gap: 5px; }
+  .cprc-hero-dot { width: 6px; height: 6px; }
+  @keyframes dotActive {
+    0%   { background: #fff; width: 16px; border-radius: 3px; }
+    calc(100% / var(--slide-count)) { background: rgba(255,255,255,0.35); width: 6px; border-radius: 50%; }
+    100% { background: rgba(255,255,255,0.35); width: 6px; border-radius: 50%; }
+  }
+
+  /* Header */
+  .widget.header-widget-section { padding: 6px 10px; gap: 6px; }
+  .header-right-tools { gap: 6px; }
+  .header-clock { display: none; }
+  .header-book-btn { padding: 4px 8px; font-size: 0.72rem; }
+  .lang-switcher { padding: 2px 6px; }
+  .lang-btn { font-size: 0.7rem; }
+
+  /* Nav hamburger */
+  .hamburger-menu-block { display: flex !important; align-items: center; gap: 6px; padding: 10px 14px; cursor: pointer; }
+  .menu-parent-unordered-list { flex-direction: column !important; width: 100%; }
+  .megamenu-link { width: 100% !important; border-bottom: 1px solid rgba(255,255,255,0.12); }
+  .menu-parent-list-link { padding: 10px 16px !important; width: 100%; display: block; }
+  .mega-menu-dropdown { position: static !important; box-shadow: none !important; width: 100% !important; border-radius: 0 !important; }
+  .menu-child-box { padding: 8px 24px !important; }
+
+  /* WhatsApp button */
+  .cprc-whatsapp-btn { bottom: 70px; right: 12px; padding: 9px 12px; }
+  .cprc-whatsapp-label { display: none; }
+  .cprc-whatsapp-btn { border-radius: 50%; width: 48px; height: 48px; justify-content: center; }
+
+  /* Layout */
+  .cprc-home-wrapper { flex-direction: column; padding: 10px; gap: 10px; }
+  .cprc-main-col, .cprc-sidebar-col { width: 100%; }
+  .cprc-two-col { grid-template-columns: 1fr; gap: 10px; }
+  .cprc-section-block { margin-bottom: var(--spacing-medium); }
+
+  /* Packages */
+  .cprc-packages-section { padding: var(--spacing-medium); }
+  .cprc-packages-header { flex-direction: column; align-items: flex-start; }
+  .cprc-pkg-grid { grid-template-columns: 1fr; }
+  .cprc-booking-cta { flex-direction: column; gap: 12px; padding: 14px; }
+  .cprc-cta-btns { flex-direction: column; width: 100%; }
+  .cprc-cta-phone, .cprc-cta-whatsapp { justify-content: center; }
+
+  /* Services */
+  .cprc-services-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .cprc-service-box { padding: 14px 8px; }
+  .cprc-service-icon { font-size: 22px; }
+  .cprc-service-label { font-size: 0.75rem; }
+
+  /* Gallery */
+  .cprc-gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .cprc-gallery-item img { height: 110px; }
+
+  /* Sidebar */
+  .cprc-sidebar-persons-row { flex-direction: row; gap: 8px; }
+  .cprc-sidebar-persons-row .cprc-sidebar-widget { flex: 1; margin-bottom: 0; }
+  .cprc-sidebar-person img { width: 70px; height: 85px; }
+  .cprc-person-name { font-size: 0.78rem; }
+  .cprc-person-desg { font-size: 0.68rem; }
+
+  /* Members page */
+  .person-card-stack-list .container-col-3 { width: 50% !important; }
+  .person-card-image { height: 140px; }
+  .person-card-name { font-size: 0.82rem; }
+  .person-card-designation { font-size: 0.72rem; }
+
+  /* Container columns */
+  .container-col-3, .container-col-4, .container-col-6 { width: 100% !important; }
+
+  /* Footer */
+  .cprc-footer-main { grid-template-columns: 1fr; gap: 24px; padding: 24px 16px; }
+  .cprc-footer-bottom { flex-direction: column; text-align: center; padding: 12px 16px; }
+
+  /* Go to top */
+  .go-to-top-btn { bottom: 14px; right: 14px; width: 36px; height: 36px; font-size: 16px; }
+}
+
+/* ── EXTRA SMALL: up to 380px ── */
+@media (max-width: 380px) {
+  .banner-slider-image-widget .home-carousel,
+  .banner-slider-image-widget .images { height: 180px !important; }
+  .cprc-services-grid { grid-template-columns: 1fr 1fr; }
+  .cprc-gallery-grid { grid-template-columns: 1fr 1fr; }
+  .person-card-stack-list .container-col-3 { width: 100% !important; }
+  .cprc-sidebar-persons-row { flex-direction: column; }
+  .cprc-sidebar-persons-row .cprc-sidebar-widget { flex: none; width: 100%; }
+}
+
+/* ── BOOKING SYSTEM RESPONSIVE ── */
+@media (max-width: 1000px) {
+  .booking-layout { grid-template-columns: 1fr; }
+  .booking-sidebar { order: -1; }
+  .package-radio-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .booking-grid-2 { grid-template-columns: 1fr; }
+  .bk-col-span-2 { grid-column: span 1; }
+  .package-radio-grid { grid-template-columns: 1fr; }
+  .booking-submit-bar { flex-direction: column; align-items: stretch; }
+  .bk-submit-btn { justify-content: center; }
+  .confirm-steps { grid-template-columns: 1fr; }
+  .booking-hero-title { font-size: 1.4rem; }
+  .confirm-ref-box { flex-direction: column; gap: 8px; }
+  .confirm-ref-number { font-size: 1.3rem; }
+}

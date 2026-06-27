@@ -18,10 +18,10 @@
                  style="background:#fff; border-radius:var(--radius-medium); overflow:hidden; box-shadow:var(--shadow-small); text-align:center; padding-bottom:var(--spacing-medium);">
               <div class="person-card-image-wrapper" style="background:var(--color-normal-light); height:180px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
                 <img class="person-card-image"
-                     src="{{ $member->photo ? asset('storage/'.$member->photo) : asset('template/site-assets/images/logo.png') }}"
+                     src="{{ $member->photo ? asset('storage/' . $member->photo) : asset('images/club/logo.jpeg') }}"
                      alt="{{ $member->name }}"
-                     style="width:100%; height:180px; object-fit:cover;"
-                     onerror="this.src='{{ asset('template/site-assets/images/logo.png') }}'">
+                     style="width:100%; height:180px; object-fit:cover; object-position:center center; background:var(--color-normal-light);"
+                     onerror="this.src='{{ asset('images/club/logo.jpeg') }}'">
               </div>
               <div class="person-card-info" style="padding:var(--spacing-medium);">
                 <p class="person-card-name" style="font-weight:600; font-size:var(--text-large); margin:0 0 4px;">{{ $member->name }}</p>

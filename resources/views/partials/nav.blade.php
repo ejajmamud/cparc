@@ -3,116 +3,98 @@
     <section class="widget menu-widget">
       <span id="menu-toggle" class="hamburger-menu-block">
         <icon class="hamburger-menu ph ph-list"></icon>
-        <span>Select Menu</span>
+        <span>{{ __('site.home') }}</span>
       </span>
-      <ul class="menu-list menu-parent-unordered-list custom-items-center">
+      <ul class="menu-list menu-parent-unordered-list cprc-nav-center">
 
         <li class="megamenu-link">
-          <a class="menu-parent-list-link home-link" href="{{ url('/') }}"></a>
+          <a class="menu-parent-list-link home-link" href="{{ url('/') }}" title="{{ __('site.home') }}"></a>
         </li>
 
         <li class="megamenu-link menu-parent-list">
-          <a title="About Us" href="#" class="menu-parent-list-link">
-            About Us <icon class="menu-parent-list-link-icon ph ph-caret-double-down"></icon>
+          <a title="{{ __('site.about') }}" href="#" class="menu-parent-list-link">
+            {{ __('site.about') }} <icon class="menu-parent-list-link-icon ph ph-caret-double-down"></icon>
           </a>
           <div class="mega-menu-dropdown megaMenu">
             <div class="menu-child-box">
-              <h6 class="menu-child-title"><a href="#"><div>Club Information</div></a></h6>
+              <h6 class="menu-child-title"><a href="#"><div>{{ app()->getLocale() === 'bn' ? 'ক্লাব তথ্য' : 'Club Information' }}</div></a></h6>
               <ul class="menu-sub-child-unordered-list">
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('about') }}"><div>History &amp; Background</div></a>
-                </li>
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('about') }}#mission"><div>Mission &amp; Vision</div></a>
-                </li>
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('about') }}#organogram"><div>Organogram</div></a>
-                </li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('about') }}"><div>{{ app()->getLocale() === 'bn' ? 'ইতিহাস ও পটভূমি' : 'History & Background' }}</div></a></li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('about') }}#mission"><div>{{ app()->getLocale() === 'bn' ? 'লক্ষ্য ও উদ্দেশ্য' : 'Mission & Vision' }}</div></a></li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('about') }}#facilities"><div>{{ app()->getLocale() === 'bn' ? 'সুযোগ-সুবিধা' : 'Facilities' }}</div></a></li>
               </ul>
             </div>
             <div class="menu-child-box">
-              <h6 class="menu-child-title"><a href="#"><div>Leadership</div></a></h6>
+              <h6 class="menu-child-title"><a href="#"><div>{{ app()->getLocale() === 'bn' ? 'নেতৃত্ব' : 'Leadership' }}</div></a></h6>
               <ul class="menu-sub-child-unordered-list">
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('members.index') }}"><div>Executive Committee</div></a>
-                </li>
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('members.index') }}?type=former"><div>Former Presidents</div></a>
-                </li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('members.index') }}"><div>{{ __('site.members') }}</div></a></li>
               </ul>
             </div>
           </div>
         </li>
 
         <li class="megamenu-link menu-parent-list">
-          <a title="Notices" href="{{ route('notices.index') }}" class="menu-parent-list-link">
-            Notices <icon class="menu-parent-list-link-icon ph ph-caret-double-down"></icon>
+          <a title="{{ __('site.packages') }}" href="{{ route('packages.index') }}" class="menu-parent-list-link">
+            {{ __('site.packages') }} <icon class="menu-parent-list-link-icon ph ph-caret-double-down"></icon>
           </a>
           <div class="mega-menu-dropdown megaMenu">
             <div class="menu-child-box">
-              <h6 class="menu-child-title"><a href="#"><div>Official Notices</div></a></h6>
+              <h6 class="menu-child-title"><a href="#"><div>{{ app()->getLocale() === 'bn' ? 'বুকিং প্যাকেজ' : 'Booking Packages' }}</div></a></h6>
               <ul class="menu-sub-child-unordered-list">
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('notices.index') }}?type=general"><div>General Notices</div></a>
-                </li>
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('notices.index') }}?type=tender"><div>Tenders</div></a>
-                </li>
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('notices.index') }}?type=recruitment"><div>Recruitment</div></a>
-                </li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('packages.index') }}"><div>{{ app()->getLocale() === 'bn' ? 'সকল প্যাকেজ দেখুন' : 'View All Packages' }}</div></a></li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('booking.form') }}"><div>{{ app()->getLocale() === 'bn' ? 'হল বুক করুন' : 'Book the Hall' }}</div></a></li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('contact') }}"><div>{{ app()->getLocale() === 'bn' ? 'বুকিং অনুসন্ধান' : 'Booking Enquiry' }}</div></a></li>
               </ul>
             </div>
           </div>
         </li>
 
         <li class="megamenu-link menu-parent-list">
-          <a title="Events" href="{{ route('events.index') }}" class="menu-parent-list-link">
-            Events <icon class="menu-parent-list-link-icon ph ph-caret-double-down"></icon>
+          <a title="{{ __('site.notices') }}" href="{{ route('notices.index') }}" class="menu-parent-list-link">
+            {{ __('site.notices') }} <icon class="menu-parent-list-link-icon ph ph-caret-double-down"></icon>
           </a>
           <div class="mega-menu-dropdown megaMenu">
             <div class="menu-child-box">
-              <h6 class="menu-child-title"><a href="#"><div>Club Events</div></a></h6>
+              <h6 class="menu-child-title"><a href="#"><div>{{ app()->getLocale() === 'bn' ? 'বিজ্ঞপ্তি' : 'Official Notices' }}</div></a></h6>
               <ul class="menu-sub-child-unordered-list">
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('events.index') }}?type=upcoming"><div>Upcoming Events</div></a>
-                </li>
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('events.index') }}?type=past"><div>Past Events</div></a>
-                </li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('notices.index') }}?type=general"><div>{{ app()->getLocale() === 'bn' ? 'সাধারণ বিজ্ঞপ্তি' : 'General Notices' }}</div></a></li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('notices.index') }}?type=tender"><div>{{ app()->getLocale() === 'bn' ? 'দরপত্র' : 'Tenders' }}</div></a></li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('notices.index') }}?type=recruitment"><div>{{ app()->getLocale() === 'bn' ? 'নিয়োগ' : 'Recruitment' }}</div></a></li>
               </ul>
             </div>
           </div>
         </li>
 
         <li class="megamenu-link menu-parent-list">
-          <a title="Gallery" href="{{ route('gallery.index') }}" class="menu-parent-list-link">
-            Gallery <icon class="menu-parent-list-link-icon ph ph-caret-double-down"></icon>
+          <a title="{{ __('site.events') }}" href="{{ route('events.index') }}" class="menu-parent-list-link">
+            {{ __('site.events') }} <icon class="menu-parent-list-link-icon ph ph-caret-double-down"></icon>
           </a>
           <div class="mega-menu-dropdown megaMenu">
             <div class="menu-child-box">
-              <h6 class="menu-child-title"><a href="#"><div>Media</div></a></h6>
+              <h6 class="menu-child-title"><a href="#"><div>{{ app()->getLocale() === 'bn' ? 'অনুষ্ঠান' : 'Club Events' }}</div></a></h6>
               <ul class="menu-sub-child-unordered-list">
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('gallery.index') }}?type=photos"><div>Photo Gallery</div></a>
-                </li>
-                <li class="menu-sub-child-list">
-                  <a class="menu-sub-child-link" href="{{ route('gallery.index') }}?type=videos"><div>Videos</div></a>
-                </li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('events.index') }}?type=upcoming"><div>{{ app()->getLocale() === 'bn' ? 'আসন্ন অনুষ্ঠান' : 'Upcoming Events' }}</div></a></li>
+                <li class="menu-sub-child-list"><a class="menu-sub-child-link" href="{{ route('events.index') }}?type=past"><div>{{ app()->getLocale() === 'bn' ? 'অতীত অনুষ্ঠান' : 'Past Events' }}</div></a></li>
               </ul>
             </div>
           </div>
         </li>
 
         <li class="megamenu-link menu-parent-list">
-          <a title="News" href="{{ route('news.index') }}" class="menu-parent-list-link">
-            News
+          <a title="{{ __('site.gallery') }}" href="{{ route('gallery.index') }}" class="menu-parent-list-link">
+            {{ __('site.gallery') }}
           </a>
         </li>
 
         <li class="megamenu-link menu-parent-list">
-          <a title="Contact" href="{{ route('contact') }}" class="menu-parent-list-link">
-            Contact
+          <a title="{{ __('site.news') }}" href="{{ route('news.index') }}" class="menu-parent-list-link">
+            {{ __('site.news') }}
+          </a>
+        </li>
+
+        <li class="megamenu-link menu-parent-list">
+          <a title="{{ __('site.contact') }}" href="{{ route('contact') }}" class="menu-parent-list-link">
+            {{ __('site.contact') }}
           </a>
         </li>
 

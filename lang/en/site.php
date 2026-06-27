@@ -1,0 +1,103 @@
+<?php
+
+return [
+    // Club identity
+    'club_name'        => 'Chittagong Port Republic Club',
+    'club_name_short'  => 'CPRC',
+    'authority'        => 'Chittagong Port Authority, Bangladesh',
+    'established'      => 'Established 1955',
+    'tagline'          => 'Your Premier Community Club in Port City',
+
+    // Nav labels
+    'home'             => 'Home',
+    'about'            => 'About Us',
+    'notices'          => 'Notices',
+    'events'           => 'Events',
+    'gallery'          => 'Gallery',
+    'news'             => 'News',
+    'contact'          => 'Contact',
+    'members'          => 'Executive Committee',
+    'packages'         => 'Hall Booking',
+
+    // Home sections
+    'notice_board'     => 'Notice Board',
+    'upcoming_events'  => 'Upcoming Events',
+    'latest_news'      => 'Latest News',
+    'our_services'     => 'Our Services',
+    'photo_gallery'    => 'Photo Gallery',
+    'president'        => 'President',
+    'general_secretary'=> 'General Secretary',
+    'see_all'          => 'See All',
+    'view_full_gallery'=> 'View Full Gallery',
+    'details'          => 'Details',
+
+    // Packages
+    'hall_booking'         => 'Hall & Venue Booking',
+    'hall_booking_subtitle'=> 'Book our spacious venue for weddings, receptions, corporate events & cultural programmes',
+    'book_now'             => 'Book Now',
+    'enquire_now'          => 'Enquire Now',
+    'per_session'          => 'per session',
+    'starting_from'        => 'Starting from',
+    'features_included'    => 'What\'s Included',
+
+    // About
+    'about_title'          => 'About Chittagong Port Republic Club',
+    'about_desc'           => 'Chittagong Port Republic Club (CPRC) is one of the premier community clubs in Chittagong, established under the Chittagong Port Authority. With a sprawling green campus, multi-purpose halls, sports grounds, and modern facilities, CPRC serves as the social, cultural, and recreational hub for port officials, their families, and the broader Chittagong community.',
+
+    // Footer
+    'quick_links'          => 'Quick Links',
+    'contact_us'           => 'Contact Us',
+    'follow_us'            => 'Follow Us',
+    'address'              => 'Port Area, Chittagong – 4100, Bangladesh',
+    'office_hours'         => 'Sunday – Thursday: 9:00 AM – 5:00 PM',
+    'all_rights'           => 'All rights reserved.',
+    'developed_by'         => 'Developed by',
+
+    // Booking system
+    'booking_title'           => 'Book the Hall',
+    'booking_subtitle'        => 'Submit your booking request — our team will confirm within 24 hours',
+    'booker_info'             => 'Your Information',
+    'event_info'              => 'Event Details',
+    'full_name'               => 'Full Name',
+    'phone_number'            => 'Phone Number',
+    'email_address'           => 'Email Address',
+    'address'                 => 'Address',
+    'nid_number'              => 'National ID (NID)',
+    'select_package'          => 'Select Package',
+    'event_type'              => 'Event Type',
+    'event_date'              => 'Event Date',
+    'start_time'              => 'Start Time',
+    'end_time'                => 'End Time',
+    'guests_count'            => 'Expected Guests',
+    'special_requests'        => 'Special Requests',
+    'submit_booking'          => 'Submit Booking Request',
+    'checking_availability'   => 'Checking availability...',
+    'date_available'          => 'This date is available!',
+    'date_unavailable'        => 'This date is fully booked. Please choose another date.',
+    'booking_confirmed_title' => 'Booking Request Received!',
+    'booking_ref'             => 'Reference Number',
+    'booking_pending_note'    => 'Your booking request has been received. Our team will contact you within 24 hours to confirm and arrange the advance payment.',
+    'booking_what_next'       => 'What Happens Next?',
+    'booking_step1'           => 'Our team reviews your request',
+    'booking_step2'           => 'We call you to confirm details',
+    'booking_step3'           => 'Advance payment secures your date',
+    'booking_step4'           => 'Receive official confirmation letter',
+    'print_receipt'           => 'Print This Page',
+    'go_home'                 => 'Back to Home',
+    'event_wedding'           => 'Wedding',
+    'event_reception'         => 'Reception / Walima',
+    'event_birthday'          => 'Birthday / Anniversary',
+    'event_corporate'         => 'Corporate Event',
+    'event_cultural'          => 'Cultural Programme',
+    'event_seminar'           => 'Seminar / Conference',
+    'event_other'             => 'Other',
+    'optional'                => 'Optional',
+    'package_price'           => 'Package Price',
+    'advance_required'        => 'Advance Required (50%)',
+
+    // Notices
+    'general'              => 'General',
+    'tender'               => 'Tender',
+    'recruitment'          => 'Recruitment',
+    'new'                  => 'New',
+];

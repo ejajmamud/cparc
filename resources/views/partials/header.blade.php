@@ -1,27 +1,35 @@
 <section class="widget header-widget-section">
   <div class="header-left-section">
-    <a class="header-title" href="{{ url('/') }}" title="Chittagong Port Republic Club">
-      Chittagong Port Republic Club
+    <a class="header-title" href="{{ url('/') }}" title="{{ __('site.club_name') }}">
+      {{ __('site.club_name') }}
     </a>
   </div>
-  <div class="header-left-section" style="flex:1; justify-content:flex-end; display:flex; align-items:center; gap:16px;">
-    <a href="{{ route('notices.index') }}" class="header-title" style="font-size:var(--text-small);">
-      <i class="ph ph-bell"></i> Notices
+  <div class="header-right-tools">
+    <span class="header-clock" id="clock"></span>
+    <a href="{{ route('notices.index') }}" class="header-icon-link" title="{{ __('site.notices') }}">
+      <i class="ph ph-bell"></i>
     </a>
-    <a href="{{ route('gallery.index') }}" class="header-title" style="font-size:var(--text-small);">
-      <i class="ph ph-images"></i> Gallery
+    <a href="{{ route('packages.index') }}" class="header-book-btn">
+      <i class="ph ph-calendar-check"></i> {{ __('site.book_now') }}
     </a>
-    <span class="header-title" id="clock" style="font-size:var(--text-small);"></span>
+    {{-- Language Switcher --}}
+    <div class="lang-switcher">
+      <a href="{{ route('lang.switch', 'bn') }}"
+         class="lang-btn {{ app()->getLocale() === 'bn' ? 'lang-active' : '' }}">বাংলা</a>
+      <span class="lang-sep">|</span>
+      <a href="{{ route('lang.switch', 'en') }}"
+         class="lang-btn {{ app()->getLocale() === 'en' ? 'lang-active' : '' }}">EN</a>
+    </div>
   </div>
 </section>
 
 <script>
   (function(){
-    function updateClock(){
-      var now = new Date();
-      document.getElementById('clock').textContent = now.toLocaleTimeString('en-BD');
+    var el = document.getElementById('clock');
+    if (!el) return;
+    function tick() {
+      el.textContent = new Date().toLocaleTimeString('{{ app()->getLocale() === 'bn' ? 'bn-BD' : 'en-US' }}', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
     }
-    updateClock();
-    setInterval(updateClock, 1000);
+    tick(); setInterval(tick, 1000);
   })();
 </script>
