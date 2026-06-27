@@ -1,0 +1,3 @@
+;((window,document)=>{ // EmployeeViewWidget
+document.addEventListener("DOMContentLoaded",()=>{let t=document.querySelectorAll(".chip"),c=document.querySelectorAll(".chip-image"),l=document.querySelectorAll(".content-pdf object"),n=document.querySelectorAll(".content-pdf img");function o(c,e,t){e.forEach((e,t)=>{e.classList.toggle("active",t===+c)}),t.forEach((e,t)=>{e.classList.toggle("active",t===+c)})}t.forEach(e=>{e.addEventListener("click",()=>{o(e.getAttribute("data-index").slice(6),l,t)})}),c.forEach(e=>{e.addEventListener("click",()=>{o(e.getAttribute("data-index").slice(6),n,c)})}),o(0,l,t),o(0,n,c)});
+})(_window,_document);

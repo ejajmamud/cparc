@@ -1,0 +1,3 @@
+;((window,document)=>{ // HybridBrowseWidget
+document.addEventListener("DOMContentLoaded",function(){});
+})(_window,_document);

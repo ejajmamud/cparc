@@ -1,0 +1,3 @@
+;((window,document)=>{ // TopNewsCardWidget
+let newsCards=document.querySelectorAll(".news-card-widget");newsCards.forEach(t=>{document.addEventListener("DOMContentLoaded",function(){let n=t.querySelector(".news-card-widget-ticker").children,r=0;n.length<1||(1===n.length?(n[0].style.opacity="1",n[0].style.transform="translateY(0)"):(n[0].style.opacity="1",n[0].style.transform="translateY(0)",setInterval(function(){let t=r,e=(r+1)%n.length;n[t].style.opacity="0",n[t].style.transform="translateY(-100%)",n[e].style.opacity="1",n[e].style.transform="translateY(0)",setTimeout(function(){n[t].style.transform="translateY(100%)",r=e},1500)},2500)))})});
+})(_window,_document);

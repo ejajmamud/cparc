@@ -1,0 +1,75 @@
+.container-tabs {
+  overflow: hidden;
+  height: auto;
+}
+.container-tabs .container-tab-head-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  height: 40px;
+}
+.container-tabs .container-tab-head {
+  width: auto;
+  max-width: 150px;
+  border-bottom: 2px solid transparent;
+  font-size: 16px;
+  line-height: 20px;
+  padding: 0 16px;
+  text-align: center;
+  height: 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.container-tabs .container-tab-head>.container-tab-name {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 9px 0;
+}
+.container-tabs .container-tab-head>.ph {
+  display: inline-block;
+  /*transform: translateY(-3px);*/
+}
+.container-tabs .container-tab-head>.ph~div {
+  margin-left: 8px;
+}
+.container-tabs .container-tab-head.active {
+  border-bottom: 2px solid var(--color-primary-bg);
+  color: var(--color-primary-bg);
+}
+.container-tabs .container-tab-body-group {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.container-tabs .container-tab-body {
+  position: relative;
+  display: none;
+}
+.container-tabs .container-tab-body.active {
+  display: block;
+}
+
+.btn {
+  border-width: 0;
+  background-color: transparent;
+  text-decoration: none;
+  color: black;
+}
+
+address, article, aside, blockquote, dd, div, dl, dt, fieldset, figcaption, figure, footer, form,
+h1, h2, h3, h4, h5, h6, header, li, main, nav, noscript, ol, p, section, table, tfoot, ul, video, img, object, button {
+  /*word-break: break-word;*/
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+img {
+  font-size: 0;
+}

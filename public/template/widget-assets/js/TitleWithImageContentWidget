@@ -1,0 +1,3 @@
+;((window,document)=>{ // TitleWithImageContentWidget
+document.addEventListener("DOMContentLoaded",()=>{let e=document.querySelectorAll(".title-with-image-content-widget-content-files .chip-list .chip"),i=document.querySelectorAll(".title-with-image-content-widget-content-pdf object, .title-with-image-content-widget-content-pdf div, .title-with-image-content-widget-content-pdf img");function c(t,e,i){e.forEach((t,e)=>{t.classList.remove("active")}),i.forEach((t,e)=>{t.classList.remove("active")}),e?.[t]?.classList?.add("active"),i?.[t]?.classList?.add("active")}e.forEach(t=>{t.addEventListener("click",()=>{c(t.getAttribute("data-index").slice(6),i,e)})}),c(0,i,e)});
+})(_window,_document);
