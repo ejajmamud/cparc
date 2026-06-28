@@ -132,10 +132,18 @@
   {{-- Bottom bar --}}
   <div class="cprc-footer-bottom" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
     <div>
-      Copyright &copy; 2026 - Chittagong Port Republic Club. All rights reserved.
+      @if(app()->getLocale() === 'bn')
+        কপিরাইট &copy; ২০২৬ - চট্টগ্রাম বন্দর রিপাবলিক ক্লাব। সর্বস্বত্ব সংরক্ষিত।
+      @else
+        Copyright &copy; 2026 - Chittagong Port Republic Club. All rights reserved.
+      @endif
     </div>
     <div>
-      Designed and Developed by Ejaj Mahmud.
+      @if(app()->getLocale() === 'bn')
+        ডিজাইন এবং ডেভেলপমেন্ট করেছেন এজাজ মাহমুদ।
+      @else
+        Designed and Developed by Ejaj Mahmud.
+      @endif
     </div>
   </div>
 

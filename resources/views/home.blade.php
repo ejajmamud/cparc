@@ -234,7 +234,7 @@
           <h3 class="cprc-pkg-name">{{ app()->getLocale() === 'bn' ? 'সাধারণ / বহিরাগত প্যাকেজ' : 'General / Outsider Package' }}</h3>
           <div class="cprc-pkg-price">
             <span class="cprc-pkg-note">৳</span>
-            <span class="cprc-pkg-amount">18,000</span>
+            <span class="cprc-pkg-amount">{{ app()->getLocale() === 'bn' ? '১৮,০০০' : '18,000' }}</span>
             <span class="cprc-pkg-per">/ {{ app()->getLocale() === 'bn' ? 'সেশন (দিন)' : 'Session (Day)' }}</span>
           </div>
           <p class="cprc-pkg-desc">
@@ -263,7 +263,7 @@
           <h3 class="cprc-pkg-name">{{ app()->getLocale() === 'bn' ? 'চবক কর্মকর্তা-কর্মচারী প্যাকেজ' : 'CPA Staff Package' }}</h3>
           <div class="cprc-pkg-price">
             <span class="cprc-pkg-note">৳</span>
-            <span class="cprc-pkg-amount">5,000</span>
+            <span class="cprc-pkg-amount">{{ app()->getLocale() === 'bn' ? '৫,০০০' : '5,000' }}</span>
             <span class="cprc-pkg-per">/ {{ app()->getLocale() === 'bn' ? 'সেশন (দিন)' : 'Session (Day)' }}</span>
           </div>
           <p class="cprc-pkg-desc">
@@ -292,7 +292,7 @@
           <h3 class="cprc-pkg-name">{{ app()->getLocale() === 'bn' ? 'রিপাবলিক ক্লাব সদস্য প্যাকেজ' : 'Republic Club Member Package' }}</h3>
           <div class="cprc-pkg-price">
             <span class="cprc-pkg-note">৳</span>
-            <span class="cprc-pkg-amount">3,000</span>
+            <span class="cprc-pkg-amount">{{ app()->getLocale() === 'bn' ? '৩,০০০' : '3,000' }}</span>
             <span class="cprc-pkg-per">/ {{ app()->getLocale() === 'bn' ? 'সেশন (দিন)' : 'Session (Day)' }}</span>
           </div>
           <p class="cprc-pkg-desc">
