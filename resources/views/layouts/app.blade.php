@@ -30,27 +30,27 @@
   {{-- Structured Data for LocalBusiness --}}
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@@context": "https://schema.org",
+    "@@type": "LocalBusiness",
     "name": "Chittagong Port Republic Club (CPRC)",
     "image": "{{ asset('images/club/logo.jpeg') }}",
-    "@id": "{{ url('/') }}",
+    "@@id": "{{ url('/') }}",
     "url": "{{ url('/') }}",
     "telephone": "+880-31-2500000",
     "address": {
-      "@type": "PostalAddress",
+      "@@type": "PostalAddress",
       "streetAddress": "Port Area",
       "addressLocality": "Chittagong",
       "postalCode": "4100",
       "addressCountry": "BD"
     },
     "geo": {
-      "@type": "GeoCoordinates",
+      "@@type": "GeoCoordinates",
       "latitude": 22.3168,
       "longitude": 91.8028
     },
     "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
+      "@@type": "OpeningHoursSpecification",
       "dayOfWeek": [
         "Sunday",
         "Monday",
