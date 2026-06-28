@@ -51,14 +51,4 @@ Route::get('/book-hall/confirm/{ref}', [BookingController::class, 'confirm'])->n
 // Newsletter
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
 
-// Temporary Admin Creation Route
-Route::get('/create-admin-secret-cparc', function() {
-    $user = \App\Models\User::updateOrCreate(
-        ['email' => 'admin@cparc.com'],
-        [
-            'name' => 'CPRC Admin',
-            'password' => bcrypt('AdminCparc2026!'),
-        ]
-    );
-    return 'Admin user created successfully with email: admin@cparc.com and password: AdminCparc2026!';
-});
+
