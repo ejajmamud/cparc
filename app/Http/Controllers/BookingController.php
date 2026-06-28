@@ -42,28 +42,35 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'booker_name'     => 'required|string|max:200',
-            'booker_phone'    => 'required|string|max:20',
-            'booker_email'    => 'nullable|email|max:100',
-            'booker_address'  => 'nullable|string|max:500',
-            'booker_nid'      => 'nullable|string|max:30',
-            'package_id'      => 'nullable|exists:packages,id',
-            'booking_shift'   => 'required|in:day,night',
-            'rental_type'     => 'required|in:hall,hall_field',
-            'booker_type'     => 'required|in:general,staff,member',
-            'event_type'      => 'required|string',
-            'event_type_other'=> 'nullable|string|max:100',
-            'event_date'      => 'required|date|after_or_equal:today',
-            'start_time'      => 'nullable|date_format:H:i',
-            'end_time'        => 'nullable|date_format:H:i',
-            'guests_count'    => 'nullable|integer|min:1|max:5000',
-            'special_requests'=> 'nullable|string|max:1000',
+            'booker_name'           => 'required|string|max:200',
+            'booker_phone'          => 'required|string|max:20',
+            'booker_email'          => 'nullable|email|max:100',
+            'booker_address'        => 'nullable|string|max:500',
+            'booker_nid'            => 'nullable|string|max:30',
+            'verification_document' => 'required|file|mimes:jpeg,png,pdf,jpg|max:5120',
+            'package_id'            => 'nullable|exists:packages,id',
+            'booking_shift'         => 'required|in:day,night',
+            'rental_type'           => 'required|in:hall,hall_field',
+            'booker_type'           => 'required|in:general,staff,member',
+            'event_type'            => 'required|string',
+            'event_type_other'      => 'nullable|string|max:100',
+            'event_date'            => 'required|date|after_or_equal:today',
+            'start_time'            => 'nullable|date_format:H:i',
+            'end_time'              => 'nullable|date_format:H:i',
+            'guests_count'          => 'nullable|integer|min:1|max:5000',
+            'special_requests'      => 'nullable|string|max:1000',
         ]);
 
         if (!Booking::isDateAvailable($validated['event_date'], $validated['booking_shift'])) {
             return back()->withInput()->withErrors([
                 'event_date' => __('site.date_unavailable'),
             ]);
+        }
+
+        // Store verification file
+        $documentPath = null;
+        if ($request->hasFile('verification_document')) {
+            $documentPath = $request->file('verification_document')->store('bookings/documents', 'public');
         }
 
         // Calculate dynamic total price
@@ -74,10 +81,11 @@ class BookingController extends Controller
         );
 
         $booking = Booking::create(array_merge($validated, [
-            'reference_number' => Booking::generateReference(),
-            'total_amount'     => $totalAmount,
-            'advance_paid'     => 0,
-            'status'           => 'pending',
+            'reference_number'      => Booking::generateReference(),
+            'verification_document' => $documentPath,
+            'total_amount'          => $totalAmount,
+            'advance_paid'          => 0,
+            'status'                => 'pending',
         ]));
 
         return redirect()->route('booking.confirm', $booking->reference_number);

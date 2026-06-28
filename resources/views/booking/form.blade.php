@@ -42,7 +42,7 @@
         </div>
       @endif
 
-      <form action="{{ route('booking.store') }}" method="POST" id="bookingForm" novalidate>
+      <form action="{{ route('booking.store') }}" method="POST" id="bookingForm" novalidate enctype="multipart/form-data">
         @csrf
 
         {{-- ── SECTION 1: Booker Info ── --}}
@@ -102,6 +102,22 @@
                      value="{{ old('booker_nid') }}"
                      placeholder="NID / জাতীয় পরিচয়পত্র নম্বর"
                      class="bk-input">
+            </div>
+
+            <div class="bk-field bk-col-span-2">
+              <label for="verification_document">
+                <span id="upload_label_general">{{ app()->getLocale() === 'bn' ? 'জাতীয় পরিচয়পত্র (NID) আপলোড করুন' : 'Upload National ID (NID)' }}</span>
+                <span id="upload_label_staff" style="display:none;">{{ app()->getLocale() === 'bn' ? 'চবক আইডি কার্ড আপলোড করুন' : 'Upload CPA ID Card' }}</span>
+                <span id="upload_label_member" style="display:none;">{{ app()->getLocale() === 'bn' ? 'সদস্য যাচাইকরণ কাগজপত্র / আইডি আপলোড করুন' : 'Upload Member Verification Paper / ID' }}</span>
+                <span class="bk-required">*</span>
+              </label>
+              <input type="file" id="verification_document" name="verification_document"
+                     class="bk-input @error('verification_document') bk-input-error @enderror"
+                     required>
+              <div style="font-size: 0.75rem; color: #666; margin-top: 4px;">
+                {{ app()->getLocale() === 'bn' ? 'অনুমোদিত ফরম্যাট: JPG, PNG, PDF (সর্বোচ্চ ৫ মেগাবাইট)' : 'Allowed formats: JPG, PNG, PDF (Max 5MB)' }}
+              </div>
+              @error('verification_document')<span class="bk-error-msg">{{ $message }}</span>@enderror
             </div>
 
             <div class="bk-field bk-col-span-2">
@@ -461,18 +477,23 @@
     const shift = shiftRadio.value;
     const rentalType = rentalRadio.value;
 
+    // Toggle document upload labels dynamically
+    document.getElementById('upload_label_general').style.display = (bookerType === 'general') ? 'inline' : 'none';
+    document.getElementById('upload_label_staff').style.display = (bookerType === 'staff') ? 'inline' : 'none';
+    document.getElementById('upload_label_member').style.display = (bookerType === 'member') ? 'inline' : 'none';
+
     let base = 18000;
     let bookerNameText = '';
 
     if (bookerType === 'general') {
       base = 18000;
-      bookerNameText = '{{ app()->getLocale() === 'bn' ? "সাধারণ (বহিরাগত)" : "General Public (Outsider)" }}';
+      bookerNameText = '{{ app()->getLocale() === \'bn\' ? "সাধারণ (বহিরাগত)" : "General Public (Outsider)" }}';
     } else if (bookerType === 'staff') {
       base = 5000;
-      bookerNameText = '{{ app()->getLocale() === 'bn' ? "চবক কর্মকর্তা-কর্মচারী" : "CPA Staff" }}';
+      bookerNameText = '{{ app()->getLocale() === \'bn\' ? "চবক কর্মকর্তা-কর্মচারী" : "CPA Staff" }}';
     } else if (bookerType === 'member') {
       base = 3000;
-      bookerNameText = '{{ app()->getLocale() === 'bn' ? "রিপাবলিক ক্লাব সদস্য" : "Republic Club Member" }}';
+      bookerNameText = '{{ app()->getLocale() === \'bn\' ? "রিপাবলিক ক্লাব সদস্য" : "Republic Club Member" }}';
     }
 
     sumBookerTitle.textContent = bookerNameText;

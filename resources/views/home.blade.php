@@ -224,37 +224,92 @@
       </div>
 
       <div class="cprc-pkg-grid">
-        @foreach($packages as $pkg)
-          <div class="cprc-pkg-card {{ $pkg->is_featured ? 'cprc-pkg-featured' : '' }}">
-            @if($pkg->is_featured)
-              <div class="cprc-pkg-badge">{{ app()->getLocale() === 'bn' ? 'সবচেয়ে জনপ্রিয়' : 'Most Popular' }}</div>
-            @endif
-            <div class="cprc-pkg-duration">
-              <i class="ph ph-clock"></i>
-              {{ app()->getLocale() === 'bn' ? $pkg->duration_label_bn : $pkg->duration_label }}
-            </div>
-            <h3 class="cprc-pkg-name">
-              {{ app()->getLocale() === 'bn' ? $pkg->name_bn : $pkg->name }}
-            </h3>
-            <div class="cprc-pkg-price">
-              <span class="cprc-pkg-note">{{ app()->getLocale() === 'bn' ? '৳' : '৳' }}</span>
-              <span class="cprc-pkg-amount">{{ number_format($pkg->price) }}</span>
-              <span class="cprc-pkg-per">/ {{ __('site.per_session') }}</span>
-            </div>
-            <p class="cprc-pkg-desc">
-              {{ app()->getLocale() === 'bn' && $pkg->description_bn ? $pkg->description_bn : $pkg->description }}
-            </p>
-            <ul class="cprc-pkg-features">
-              @php $feats = app()->getLocale() === 'bn' && $pkg->features_bn ? $pkg->features_bn : $pkg->features; @endphp
-              @foreach(array_slice($feats ?? [], 0, 6) as $feat)
-                <li><i class="ph ph-check-circle"></i> {{ $feat }}</li>
-              @endforeach
-            </ul>
-            <a href="{{ route('booking.form') }}?package={{ $pkg->id }}" class="cprc-pkg-btn {{ $pkg->is_featured ? 'cprc-pkg-btn-featured' : '' }}">
-              <i class="ph ph-calendar-check"></i> {{ __('site.book_now') }}
-            </a>
+        {{-- General / Outsider --}}
+        <div class="cprc-pkg-card cprc-pkg-featured">
+          <div class="cprc-pkg-badge">{{ app()->getLocale() === 'bn' ? 'সাধারণ বুকিং' : 'General Booking' }}</div>
+          <div class="cprc-pkg-duration">
+            <i class="ph ph-users"></i>
+            {{ app()->getLocale() === 'bn' ? 'সাধারণ জনগণের জন্য' : 'For General Public' }}
           </div>
-        @endforeach
+          <h3 class="cprc-pkg-name">{{ app()->getLocale() === 'bn' ? 'সাধারণ / বহিরাগত প্যাকেজ' : 'General / Outsider Package' }}</h3>
+          <div class="cprc-pkg-price">
+            <span class="cprc-pkg-note">৳</span>
+            <span class="cprc-pkg-amount">18,000</span>
+            <span class="cprc-pkg-per">/ {{ app()->getLocale() === 'bn' ? 'সেশন (দিন)' : 'Session (Day)' }}</span>
+          </div>
+          <p class="cprc-pkg-desc">
+            {{ app()->getLocale() === 'bn' 
+              ? 'বিবাহ অনুষ্ঠান, বড় রিসেপশন, কর্পোরেট কনফারেন্স এবং জাতীয় পর্যায়ের সাংস্কৃতিক উৎসবের জন্য সেরা ভেন্যু।' 
+              : 'Ideal venue for weddings, grand receptions, corporate conferences, and large cultural festivals.' }}
+          </p>
+          <ul class="cprc-pkg-features">
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'মূল হল ব্যবহার (৮০০+ ধারণক্ষমতা)' : 'Main Hall Access (800+ Capacity)' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'মাঠ সহ বুকিংয়ের সুবিধা (+৳১০,০০০ BDT)' : 'Optional Field Rental (+৳10,000 BDT)' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'রাত শিফটে বুকিংয়ের ব্যবস্থা (+৳২,০০০ বিদ্যুৎ বিল)' : 'Night Shift Booking Surcharge (+৳2,000)' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? '২টি সজ্জিত ড্রেসিং রুম ও ওয়াশরুম' : '2 Decorated Dressing Rooms & Washrooms' }}</li>
+          </ul>
+          <a href="{{ route('booking.form') }}" class="cprc-pkg-btn cprc-pkg-btn-featured">
+            <i class="ph ph-calendar-check"></i> {{ __('site.book_now') }}
+          </a>
+        </div>
+
+        {{-- CPA Staff --}}
+        <div class="cprc-pkg-card">
+          <div class="cprc-pkg-badge" style="background:#16a249;">{{ app()->getLocale() === 'bn' ? 'বিশেষ ছাড়' : 'Special Discount' }}</div>
+          <div class="cprc-pkg-duration">
+            <i class="ph ph-anchor"></i>
+            {{ app()->getLocale() === 'bn' ? 'চবক কর্মকর্তা-কর্মচারীদের জন্য' : 'For CPA Officials & Staff' }}
+          </div>
+          <h3 class="cprc-pkg-name">{{ app()->getLocale() === 'bn' ? 'চবক কর্মকর্তা-কর্মচারী প্যাকেজ' : 'CPA Staff Package' }}</h3>
+          <div class="cprc-pkg-price">
+            <span class="cprc-pkg-note">৳</span>
+            <span class="cprc-pkg-amount">5,000</span>
+            <span class="cprc-pkg-per">/ {{ app()->getLocale() === 'bn' ? 'সেশন (দিন)' : 'Session (Day)' }}</span>
+          </div>
+          <p class="cprc-pkg-desc">
+            {{ app()->getLocale() === 'bn' 
+              ? 'চট্টগ্রাম বন্দর কর্তৃপক্ষের কর্মকর্তা ও কর্মচারীদের পারিবারিক অনুষ্ঠানের জন্য বিশেষ সুবিধাজনক বুকিং প্যাকেজ।' 
+              : 'Highly discounted rates for the officers and staff of the Chittagong Port Authority.' }}
+          </p>
+          <ul class="cprc-pkg-features">
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'মূল হলের সম্পূর্ণ সুবিধা ব্যবহার' : 'Full Main Hall Access' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'মাঠ সহ বুকিংয়ের সুবিধা (+৳১০,০০০ BDT)' : 'Optional Field Rental (+৳10,000 BDT)' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'রাত শিফটে বুকিংয়ের ব্যবস্থা (+৳১,৫০০ বিদ্যুৎ বিল)' : 'Night Shift Booking Surcharge (+৳1,500)' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'চবক পরিচয়পত্র আপলোড বাধ্যতামূলক' : 'Verification Required (CPA ID Card Upload)' }}</li>
+          </ul>
+          <a href="{{ route('booking.form') }}" class="cprc-pkg-btn">
+            <i class="ph ph-calendar-check"></i> {{ __('site.book_now') }}
+          </a>
+        </div>
+
+        {{-- Club Member --}}
+        <div class="cprc-pkg-card">
+          <div class="cprc-pkg-badge" style="background:#6b21a8;">{{ app()->getLocale() === 'bn' ? 'ক্লাব প্রিভিলেজ' : 'Club Privilege' }}</div>
+          <div class="cprc-pkg-duration">
+            <i class="ph ph-identification-card"></i>
+            {{ app()->getLocale() === 'bn' ? 'রিপাবলিক ক্লাব সদস্যদের জন্য' : 'For Republic Club Members' }}
+          </div>
+          <h3 class="cprc-pkg-name">{{ app()->getLocale() === 'bn' ? 'রিপাবলিক ক্লাব সদস্য প্যাকেজ' : 'Republic Club Member Package' }}</h3>
+          <div class="cprc-pkg-price">
+            <span class="cprc-pkg-note">৳</span>
+            <span class="cprc-pkg-amount">3,000</span>
+            <span class="cprc-pkg-per">/ {{ app()->getLocale() === 'bn' ? 'সেশন (দিন)' : 'Session (Day)' }}</span>
+          </div>
+          <p class="cprc-pkg-desc">
+            {{ app()->getLocale() === 'bn' 
+              ? 'চট্টগ্রাম বন্দর রিপাবলিক ক্লাবের সম্মানিত সদস্যদের জন্য প্রিভিলেজ বুকিং রেট এবং বিশেষ অগ্রাধিকার।' 
+              : 'Exclusive privilege pricing and booking priority for members of the Chittagong Port Republic Club.' }}
+          </p>
+          <ul class="cprc-pkg-features">
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'হল ও ভিআইপি লাউঞ্জ ব্যবহারের অগ্রাধিকার' : 'Priority Access to Hall & VIP Lounge' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'মাঠ সহ বুকিংয়ের সুবিধা (+৳১০,০০০ BDT)' : 'Optional Field Rental (+৳10,000 BDT)' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'রাত শিফটে বুকিংয়ের ব্যবস্থা (+৳১,৫০০ বিদ্যুৎ বিল)' : 'Night Shift Booking Surcharge (+৳1,500)' }}</li>
+            <li><i class="ph ph-check-circle"></i> {{ app()->getLocale() === 'bn' ? 'সদস্য কার্ড বা যাচাইকরণ পত্র আপলোড বাধ্যতামূলক' : 'Verification Required (Member ID Card/Paper)' }}</li>
+          </ul>
+          <a href="{{ route('booking.form') }}" class="cprc-pkg-btn">
+            <i class="ph ph-calendar-check"></i> {{ __('site.book_now') }}
+          </a>
+        </div>
       </div>
 
       {{-- WhatsApp booking CTA --}}

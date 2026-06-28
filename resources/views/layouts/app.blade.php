@@ -5,8 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>@yield('title', __('site.club_name'))</title>
-  <meta name="description" content="@yield('description', __('site.tagline'))">
+  <title>@yield('title', __('site.club_name') . ' | ' . __('site.tagline'))</title>
+  <meta name="description" content="@yield('description', 'Chittagong Port Republic Club (CPRC) is the premier community, recreation, and social venue in Chittagong Port City. Book our state-of-the-art wedding hall, sports complex, and dining facilities today.')">
+  <meta name="keywords" content="Chittagong Port Republic Club, CPRC, Chittagong Port Authority, CPRC Hall Booking, Wedding Hall Chittagong, Port Club, Chittagong Community Center, Chittagong Event Venue, চট্টগ্রাম বন্দর রিপাবলিক ক্লাব">
+  <meta name="author" content="Chittagong Port Authority">
+  <meta name="robots" content="index, follow">
+
+  {{-- Open Graph / Facebook --}}
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:title" content="@yield('title', __('site.club_name') . ' | ' . __('site.tagline'))">
+  <meta property="og:description" content="@yield('description', 'Discover Chittagong Port Republic Club (CPRC) - premier community center, premium events venue, and recreation club in Chittagong Port City.')">
+  <meta property="og:image" content="{{ asset('images/club/logo.jpeg') }}">
+
+  {{-- Twitter --}}
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="{{ url()->current() }}">
+  <meta property="twitter:title" content="@yield('title', __('site.club_name') . ' | ' . __('site.tagline'))">
+  <meta property="twitter:description" content="@yield('description', 'Discover Chittagong Port Republic Club (CPRC) - premier community center, premium events venue, and recreation club in Chittagong Port City.')">
+  <meta property="twitter:image" content="{{ asset('images/club/logo.jpeg') }}">
+
+  <link rel="canonical" href="{{ url()->current() }}">
+
+  {{-- Structured Data for LocalBusiness --}}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Chittagong Port Republic Club (CPRC)",
+    "image": "{{ asset('images/club/logo.jpeg') }}",
+    "@id": "{{ url('/') }}",
+    "url": "{{ url('/') }}",
+    "telephone": "+880-31-2500000",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Port Area",
+      "addressLocality": "Chittagong",
+      "postalCode": "4100",
+      "addressCountry": "BD"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 22.3168,
+      "longitude": 91.8028
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday"
+      ],
+      "opens": "09:00",
+      "closes": "17:00"
+    }
+  }
+  </script>
 
   {{-- Preconnect fonts --}}
   <link rel="preconnect" href="https://fonts.googleapis.com">

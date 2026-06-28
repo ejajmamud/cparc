@@ -39,6 +39,13 @@ class BookingResource extends Resource
                 Forms\Components\TextInput::make('booker_phone')->required()->label('Phone'),
                 Forms\Components\TextInput::make('booker_email')->email()->label('Email'),
                 Forms\Components\TextInput::make('booker_nid')->label('NID'),
+                Forms\Components\FileUpload::make('verification_document')
+                    ->label('Verification Document')
+                    ->directory('bookings/documents')
+                    ->visibility('public')
+                    ->downloadable()
+                    ->openable()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf']),
                 Forms\Components\Textarea::make('booker_address')->rows(2)->columnSpanFull()->label('Address'),
             ]),
 

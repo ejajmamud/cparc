@@ -60,6 +60,12 @@
             @endif
           </strong></td>
         </tr>
+        @if($booking->verification_document)
+        <tr>
+          <td>{{ app()->getLocale() === 'bn' ? 'যাচাইকরণ ফাইল' : 'Verification Document' }}</td>
+          <td><strong><a href="{{ asset('storage/' . $booking->verification_document) }}" target="_blank" style="color:var(--color-primary-bg); text-decoration: underline;"><i class="ph ph-file-arrow-down"></i> {{ app()->getLocale() === 'bn' ? 'ফাইল ডাউনলোড করুন' : 'Download File' }}</a></strong></td>
+        </tr>
+        @endif
         <tr>
           <td>{{ app()->getLocale() === 'bn' ? 'শিফট' : 'Shift' }}</td>
           <td><strong>

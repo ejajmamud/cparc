@@ -12,7 +12,7 @@ class Booking extends Model
     use SoftDeletes;
     protected $fillable = [
         'reference_number','booker_name','booker_phone','booker_email',
-        'booker_address','booker_nid','package_id','booking_shift','rental_type','booker_type',
+        'booker_address','booker_nid','verification_document','package_id','booking_shift','rental_type','booker_type',
         'event_type','event_type_other','event_date','start_time','end_time','guests_count',
         'special_requests','status','admin_notes','confirmed_at','cancelled_at',
         'total_amount','advance_paid','payment_method','transaction_id',
