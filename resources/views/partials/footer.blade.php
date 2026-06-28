@@ -130,16 +130,13 @@
   </div>
 
   {{-- Bottom bar --}}
-  <div class="cprc-footer-bottom">
-    <p>
-      &copy; {{ date('Y') }} {{ __('site.club_name') }}. {{ __('site.all_rights') }}
-      &nbsp;|&nbsp; {{ app()->getLocale() === 'bn' ? 'বন্দর এলাকা, চট্টগ্রাম' : 'Port Area, Chittagong, Bangladesh' }}
-    </p>
-    <p>
-      <a href="{{ route('notices.index') }}?type=tender">{{ __('site.tender') }}</a> &middot;
-      <a href="{{ route('notices.index') }}?type=recruitment">{{ __('site.recruitment') }}</a> &middot;
-      <a href="{{ route('contact') }}">{{ __('site.contact') }}</a>
-    </p>
+  <div class="cprc-footer-bottom" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+    <div>
+      Copyright &copy; 2026 - Chittagong Port Republic Club. All rights reserved.
+    </div>
+    <div>
+      Designed and Developed by Ejaj Mahmud.
+    </div>
   </div>
 
 </footer>

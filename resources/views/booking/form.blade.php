@@ -487,13 +487,13 @@
 
     if (bookerType === 'general') {
       base = 18000;
-      bookerNameText = '{{ app()->getLocale() === \'bn\' ? "সাধারণ (বহিরাগত)" : "General Public (Outsider)" }}';
+      bookerNameText = '{{ app()->getLocale() === 'bn' ? "সাধারণ (বহিরাগত)" : "General Public (Outsider)" }}';
     } else if (bookerType === 'staff') {
       base = 5000;
-      bookerNameText = '{{ app()->getLocale() === \'bn\' ? "চবক কর্মকর্তা-কর্মচারী" : "CPA Staff" }}';
+      bookerNameText = '{{ app()->getLocale() === 'bn' ? "চবক কর্মকর্তা-কর্মচারী" : "CPA Staff" }}';
     } else if (bookerType === 'member') {
       base = 3000;
-      bookerNameText = '{{ app()->getLocale() === \'bn\' ? "রিপাবলিক ক্লাব সদস্য" : "Republic Club Member" }}';
+      bookerNameText = '{{ app()->getLocale() === 'bn' ? "রিপাবলিক ক্লাব সদস্য" : "Republic Club Member" }}';
     }
 
     sumBookerTitle.textContent = bookerNameText;
