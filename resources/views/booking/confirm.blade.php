@@ -49,10 +49,35 @@
         </tr>
         @endif
         <tr>
-          <td>{{ app()->getLocale() === 'bn' ? 'প্যাকেজ' : 'Package' }}</td>
+          <td>{{ app()->getLocale() === 'bn' ? 'আবেদনকারীর ধরণ' : 'Booker Category' }}</td>
           <td><strong>
-            {{ app()->getLocale() === 'bn' && $booking->package->name_bn ? $booking->package->name_bn : $booking->package->name }}
-            ({{ app()->getLocale() === 'bn' && $booking->package->duration_label_bn ? $booking->package->duration_label_bn : $booking->package->duration_label }})
+            @if($booking->booker_type === 'general')
+              {{ app()->getLocale() === 'bn' ? 'সাধারণ (বহিরাগত)' : 'General Public (Outsider)' }}
+            @elseif($booking->booker_type === 'staff')
+              {{ app()->getLocale() === 'bn' ? 'চবক কর্মকর্তা-কর্মচারী' : 'CPA Staff' }}
+            @elseif($booking->booker_type === 'member')
+              {{ app()->getLocale() === 'bn' ? 'রিপাবলিক ক্লাব সদস্য' : 'Republic Club Member' }}
+            @endif
+          </strong></td>
+        </tr>
+        <tr>
+          <td>{{ app()->getLocale() === 'bn' ? 'শিফট' : 'Shift' }}</td>
+          <td><strong>
+            @if($booking->booking_shift === 'day')
+              {{ app()->getLocale() === 'bn' ? 'দিন (দুপুর ১২:০০ - বিকাল ৫:০০)' : 'Day Shift (12:00 PM - 5:00 PM)' }}
+            @else
+              {{ app()->getLocale() === 'bn' ? 'রাত (সন্ধ্যা ৬:০০ - রাত ১১:০০)' : 'Night Shift (6:00 PM - 11:00 PM)' }}
+            @endif
+          </strong></td>
+        </tr>
+        <tr>
+          <td>{{ app()->getLocale() === 'bn' ? 'ভাড়ার ধরণ' : 'Rental Option' }}</td>
+          <td><strong>
+            @if($booking->rental_type === 'hall')
+              {{ app()->getLocale() === 'bn' ? 'শুধু হল' : 'Only Hall' }}
+            @else
+              {{ app()->getLocale() === 'bn' ? 'হল + মাঠ' : 'Hall + Field' }}
+            @endif
           </strong></td>
         </tr>
         <tr>

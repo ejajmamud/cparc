@@ -12,9 +12,9 @@ class Booking extends Model
     use SoftDeletes;
     protected $fillable = [
         'reference_number','booker_name','booker_phone','booker_email',
-        'booker_address','booker_nid','package_id','event_type','event_type_other',
-        'event_date','start_time','end_time','guests_count','special_requests',
-        'status','admin_notes','confirmed_at','cancelled_at',
+        'booker_address','booker_nid','package_id','booking_shift','rental_type','booker_type',
+        'event_type','event_type_other','event_date','start_time','end_time','guests_count',
+        'special_requests','status','admin_notes','confirmed_at','cancelled_at',
         'total_amount','advance_paid','payment_method','transaction_id',
     ];
 
@@ -51,14 +51,49 @@ class Booking extends Model
         return 'CPRC-' . $year . '-' . str_pad($last + 1, 4, '0', STR_PAD_LEFT);
     }
 
-    public static function isDateAvailable(string $date, int $packageId, ?int $excludeId = null): bool
+    /**
+     * Calculate total BDT price dynamically based on:
+     * - bookerType: general, staff, member
+     * - shift: day, night
+     * - rentalType: hall, hall_field
+     */
+    public static function calculatePrice(string $bookerType, string $shift, string $rentalType): int
+    {
+        // 1. Base Hall Price (Day Shift)
+        $prices = [
+            'general' => 18000,
+            'staff'   => 5000,
+            'member'  => 3000,
+        ];
+        
+        $base = $prices[$bookerType] ?? 18000;
+        
+        // 2. Field Surcharge (+10,000 for all)
+        if ($rentalType === 'hall_field') {
+            $base += 10000;
+        }
+        
+        // 3. Night Shift Electricity Surcharge
+        if ($shift === 'night') {
+            if ($bookerType === 'general') {
+                $base += 2000;
+            } else {
+                $base += 1500;
+            }
+        }
+        
+        return $base;
+    }
+
+    public static function isDateAvailable(string $date, string $shift, ?int $excludeId = null): bool
     {
         $query = static::where('event_date', $date)
+            ->where('booking_shift', $shift)
             ->whereIn('status', ['pending', 'confirmed']);
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);
         }
-        return $query->count() < 2; // allow max 2 bookings per day (day + night slots)
+        return $query->count() === 0;
     }
 
     public static function eventTypes(): array

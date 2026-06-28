@@ -93,7 +93,10 @@ return [
     'event_other'             => 'Other',
     'optional'                => 'Optional',
     'package_price'           => 'Package Price',
-    'advance_required'        => 'Advance Required (50%)',
+    'advance_required'        => 'Advance Required',
+    'booker_type'             => 'Booker Category',
+    'booking_shift'           => 'Booking Shift',
+    'rental_type'             => 'Rental Option',
 
     // Notices
     'general'              => 'General',

@@ -127,32 +127,85 @@
           </div>
           <div class="booking-grid-2">
 
-            {{-- Package --}}
+            {{-- Booker Category --}}
             <div class="bk-field bk-col-span-2">
-              <label for="package_id">
-                {{ __('site.select_package') }} <span class="bn-text">/ প্যাকেজ</span>
+              <label>
+                {{ __('site.booker_type') ?? 'Booker Category' }} <span class="bn-text">/ আবেদনকারীর ধরণ</span>
                 <span class="bk-required">*</span>
               </label>
               <div class="package-radio-grid">
-                @foreach($packages as $pkg)
-                  <label class="pkg-radio-card @if(old('package_id', $selectedPkg) == $pkg->id) selected @endif">
-                    <input type="radio" name="package_id" value="{{ $pkg->id }}"
-                           {{ old('package_id', $selectedPkg) == $pkg->id ? 'checked' : '' }}
-                           class="pkg-radio-input">
-                    @if($pkg->is_featured)
-                      <span class="pkg-featured-badge">★ {{ app()->getLocale() === 'bn' ? 'সেরা' : 'Popular' }}</span>
-                    @endif
-                    <div class="pkg-radio-name">
-                      {{ app()->getLocale() === 'bn' && $pkg->name_bn ? $pkg->name_bn : $pkg->name }}
-                    </div>
-                    <div class="pkg-radio-duration">
-                      {{ app()->getLocale() === 'bn' && $pkg->duration_label_bn ? $pkg->duration_label_bn : $pkg->duration_label }}
-                    </div>
-                    <div class="pkg-radio-price">৳{{ number_format($pkg->price) }}</div>
-                  </label>
-                @endforeach
+                <label class="pkg-radio-card @if(old('booker_type', 'general') === 'general') selected @endif" id="lbl_bt_general">
+                  <input type="radio" name="booker_type" value="general" 
+                         {{ old('booker_type', 'general') === 'general' ? 'checked' : '' }} 
+                         class="pkg-radio-input" style="display:none;">
+                  <div class="pkg-radio-name">{{ app()->getLocale() === 'bn' ? 'সাধারণ (বহিরাগত)' : 'General Public (Outsider)' }}</div>
+                  <div class="pkg-radio-price">৳18,000 (Base)</div>
+                </label>
+                <label class="pkg-radio-card @if(old('booker_type') === 'staff') selected @endif" id="lbl_bt_staff">
+                  <input type="radio" name="booker_type" value="staff" 
+                         {{ old('booker_type') === 'staff' ? 'checked' : '' }} 
+                         class="pkg-radio-input" style="display:none;">
+                  <div class="pkg-radio-name">{{ app()->getLocale() === 'bn' ? 'চবক কর্মকর্তা-কর্মচারী' : 'CPA Staff' }}</div>
+                  <div class="pkg-radio-price">৳5,000 (Base)</div>
+                </label>
+                <label class="pkg-radio-card @if(old('booker_type') === 'member') selected @endif" id="lbl_bt_member">
+                  <input type="radio" name="booker_type" value="member" 
+                         {{ old('booker_type') === 'member' ? 'checked' : '' }} 
+                         class="pkg-radio-input" style="display:none;">
+                  <div class="pkg-radio-name">{{ app()->getLocale() === 'bn' ? 'রিপাবলিক ক্লাব সদস্য' : 'Republic Club Member' }}</div>
+                  <div class="pkg-radio-price">৳3,000 (Base)</div>
+                </label>
               </div>
-              @error('package_id')<span class="bk-error-msg">{{ $message }}</span>@enderror
+              @error('booker_type')<span class="bk-error-msg">{{ $message }}</span>@enderror
+            </div>
+
+            {{-- Booking Shift --}}
+            <div class="bk-field">
+              <label>
+                {{ __('site.booking_shift') ?? 'Shift' }} <span class="bn-text">/ শিফট</span>
+                <span class="bk-required">*</span>
+              </label>
+              <div class="package-radio-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="pkg-radio-card @if(old('booking_shift', 'day') === 'day') selected @endif" id="lbl_shift_day" style="padding: 12px 14px;">
+                  <input type="radio" name="booking_shift" value="day" 
+                         {{ old('booking_shift', 'day') === 'day' ? 'checked' : '' }} 
+                         class="pkg-radio-input" style="display:none;">
+                  <div class="pkg-radio-name" style="font-size: 0.95rem;">{{ app()->getLocale() === 'bn' ? 'দিন' : 'Day Shift' }}</div>
+                  <div style="font-size: 0.72rem; color: #666; margin-top: 4px;">12:00 PM - 5:00 PM</div>
+                </label>
+                <label class="pkg-radio-card @if(old('booking_shift') === 'night') selected @endif" id="lbl_shift_night" style="padding: 12px 14px;">
+                  <input type="radio" name="booking_shift" value="night" 
+                         {{ old('booking_shift') === 'night' ? 'checked' : '' }} 
+                         class="pkg-radio-input" style="display:none;">
+                  <div class="pkg-radio-name" style="font-size: 0.95rem;">{{ app()->getLocale() === 'bn' ? 'রাত' : 'Night Shift' }}</div>
+                  <div style="font-size: 0.72rem; color: #666; margin-top: 4px;">6:00 PM - 11:00 PM</div>
+                </label>
+              </div>
+              @error('booking_shift')<span class="bk-error-msg">{{ $message }}</span>@enderror
+            </div>
+
+            {{-- Rental Type --}}
+            <div class="bk-field">
+              <label>
+                {{ __('site.rental_type') ?? 'Rental Type' }} <span class="bn-text">/ ভাড়ার ধরণ</span>
+                <span class="bk-required">*</span>
+              </label>
+              <div class="package-radio-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                <label class="pkg-radio-card @if(old('rental_type', 'hall') === 'hall') selected @endif" id="lbl_rt_hall" style="padding: 12px 14px;">
+                  <input type="radio" name="rental_type" value="hall" 
+                         {{ old('rental_type', 'hall') === 'hall' ? 'checked' : '' }} 
+                         class="pkg-radio-input" style="display:none;">
+                  <div class="pkg-radio-name" style="font-size: 0.95rem;">{{ app()->getLocale() === 'bn' ? 'শুধু হল' : 'Only Hall' }}</div>
+                </label>
+                <label class="pkg-radio-card @if(old('rental_type') === 'hall_field') selected @endif" id="lbl_rt_field" style="padding: 12px 14px;">
+                  <input type="radio" name="rental_type" value="hall_field" 
+                         {{ old('rental_type') === 'hall_field' ? 'checked' : '' }} 
+                         class="pkg-radio-input" style="display:none;">
+                  <div class="pkg-radio-name" style="font-size: 0.95rem;">{{ app()->getLocale() === 'bn' ? 'হল + মাঠ' : 'Hall + Field' }}</div>
+                  <div style="font-size: 0.72rem; color: #666; margin-top: 4px;">+৳10,000</div>
+                </label>
+              </div>
+              @error('rental_type')<span class="bk-error-msg">{{ $message }}</span>@enderror
             </div>
 
             {{-- Event Type --}}
@@ -294,35 +347,38 @@
         </div>
       </div>
 
-      {{-- Package summary --}}
+      {{-- Pricing summary --}}
       <div class="bk-sidebar-card">
-        <h3><i class="ph ph-package"></i> {{ app()->getLocale() === 'bn' ? 'প্যাকেজ সারসংক্ষেপ' : 'Package Summary' }}</h3>
-        <div id="pkg-summary-display">
-          <p class="bk-sidebar-hint">{{ app()->getLocale() === 'bn' ? 'উপরে একটি প্যাকেজ নির্বাচন করুন' : 'Select a package above to see details.' }}</p>
-        </div>
-        @foreach($packages as $pkg)
-          <div class="pkg-summary-data" data-id="{{ $pkg->id }}" style="display:none;">
-            <div class="pkg-summary-name">
-              {{ app()->getLocale() === 'bn' && $pkg->name_bn ? $pkg->name_bn : $pkg->name }}
-            </div>
-            <div class="pkg-summary-price">৳{{ number_format($pkg->price) }}</div>
-            <div class="pkg-summary-row">
-              <span>{{ app()->getLocale() === 'bn' ? 'মেয়াদ' : 'Duration' }}</span>
-              <strong>{{ app()->getLocale() === 'bn' && $pkg->duration_label_bn ? $pkg->duration_label_bn : $pkg->duration_label }}</strong>
-            </div>
-            <div class="pkg-summary-row pkg-advance-row">
-              <span>{{ __('site.advance_required') }}</span>
-              <strong class="pkg-advance-amt">৳{{ number_format($pkg->price / 2) }}</strong>
-            </div>
-            @if($pkg->features && count($pkg->features))
-              <ul class="pkg-summary-features">
-                @foreach(array_slice($pkg->features, 0, 5) as $feat)
-                  <li><i class="ph ph-check-circle"></i> {{ $feat }}</li>
-                @endforeach
-              </ul>
-            @endif
+        <h3><i class="ph ph-receipt"></i> {{ app()->getLocale() === 'bn' ? 'ভাড়ার হিসাব বিবরণী' : 'Pricing Summary' }}</h3>
+        <div class="pkg-summary-data" style="display:block;">
+          <div class="pkg-summary-name" id="sum-booker-title">
+            {{ app()->getLocale() === 'bn' ? 'সাধারণ (বহিরাগত)' : 'General Public (Outsider)' }}
           </div>
-        @endforeach
+          
+          <div class="pkg-summary-row">
+            <span>{{ app()->getLocale() === 'bn' ? 'বেস হল ভাড়া' : 'Base Hall Rent' }}</span>
+            <strong id="sum-base-rent">৳18,000</strong>
+          </div>
+          
+          <div class="pkg-summary-row" id="sum-field-row" style="display:none;">
+            <span>{{ app()->getLocale() === 'bn' ? 'মাঠ ভাড়া' : 'Field Rent' }}</span>
+            <strong id="sum-field-rent">৳10,000</strong>
+          </div>
+          
+          <div class="pkg-summary-row" id="sum-electricity-row" style="display:none;">
+            <span>{{ app()->getLocale() === 'bn' ? 'বিদ্যুৎ বিল' : 'Electricity Bill' }}</span>
+            <strong id="sum-electricity-rent">৳0</strong>
+          </div>
+          
+          <div class="pkg-summary-price" id="sum-total-price" style="margin-top:14px; padding-top:14px; border-top: 1px dashed rgba(0,0,0,0.12); font-size:1.6rem;">
+            ৳18,000
+          </div>
+          
+          <div class="pkg-summary-row pkg-advance-row">
+            <span>{{ __('site.advance_required') }} (50%)</span>
+            <strong class="pkg-advance-amt" id="sum-advance-amt">৳9,000</strong>
+          </div>
+        </div>
       </div>
 
       {{-- Policy card --}}
@@ -344,42 +400,111 @@
 @push('scripts')
 <script>
 (function() {
-  const dateInput    = document.getElementById('event_date');
-  const pkgRadios    = document.querySelectorAll('.pkg-radio-input');
-  const pkgCards     = document.querySelectorAll('.pkg-radio-card');
-  const statusDiv    = document.getElementById('availability-status');
-  const summaryEl    = document.getElementById('pkg-summary-display');
-  const summaryCards = document.querySelectorAll('.pkg-summary-data');
-  const eventTypeEl  = document.getElementById('event_type');
-  const otherWrap    = document.getElementById('other_type_wrap');
+  const dateInput       = document.getElementById('event_date');
+  const eventTypeEl     = document.getElementById('event_type');
+  const otherWrap       = document.getElementById('other_type_wrap');
+  const statusDiv       = document.getElementById('availability-status');
+  
+  // Pricing elements
+  const sumBookerTitle  = document.getElementById('sum-booker-title');
+  const sumBaseRent     = document.getElementById('sum-base-rent');
+  const sumFieldRow     = document.getElementById('sum-field-row');
+  const sumFieldRent    = document.getElementById('sum-field-rent');
+  const sumElectricityRow = document.getElementById('sum-electricity-row');
+  const sumElectricityRent = document.getElementById('sum-electricity-rent');
+  const sumTotalPrice   = document.getElementById('sum-total-price');
+  const sumAdvanceAmt   = document.getElementById('sum-advance-amt');
 
   // Toggle "other" field
-  eventTypeEl.addEventListener('change', function() {
-    otherWrap.style.display = this.value === 'other' ? 'block' : 'none';
-  });
-
-  // Package card selection style
-  pkgRadios.forEach(function(radio) {
-    radio.addEventListener('change', function() {
-      pkgCards.forEach(c => c.classList.remove('selected'));
-      this.closest('.pkg-radio-card').classList.add('selected');
-      showPackageSummary(this.value);
-      checkAvailability();
+  if (eventTypeEl && otherWrap) {
+    eventTypeEl.addEventListener('change', function() {
+      otherWrap.style.display = this.value === 'other' ? 'block' : 'none';
     });
-  });
-
-  function showPackageSummary(pkgId) {
-    summaryCards.forEach(c => c.style.display = 'none');
-    const card = document.querySelector('.pkg-summary-data[data-id="' + pkgId + '"]');
-    if (card) {
-      summaryEl.innerHTML = '';
-      card.style.display = 'block';
-    }
   }
 
-  // Auto-show if pre-selected
-  const checkedRadio = document.querySelector('.pkg-radio-input:checked');
-  if (checkedRadio) showPackageSummary(checkedRadio.value);
+  // Setup Radio Cards selection styling
+  function setupRadioCards(name) {
+    const radios = document.querySelectorAll('input[name="' + name + '"]');
+    radios.forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        radios.forEach(r => r.closest('.pkg-radio-card').classList.remove('selected'));
+        this.closest('.pkg-radio-card').classList.add('selected');
+        
+        calculatePrice();
+        if (name === 'booking_shift') {
+          checkAvailability();
+        }
+      });
+      
+      // label card click
+      radio.closest('.pkg-radio-card').addEventListener('click', function(e) {
+        if (e.target !== radio) {
+          radio.checked = true;
+          radio.dispatchEvent(new Event('change'));
+        }
+      });
+    });
+  }
+
+  setupRadioCards('booker_type');
+  setupRadioCards('booking_shift');
+  setupRadioCards('rental_type');
+
+  function calculatePrice() {
+    const bookerRadio = document.querySelector('input[name="booker_type"]:checked');
+    const shiftRadio = document.querySelector('input[name="booking_shift"]:checked');
+    const rentalRadio = document.querySelector('input[name="rental_type"]:checked');
+
+    if (!bookerRadio || !shiftRadio || !rentalRadio) return;
+
+    const bookerType = bookerRadio.value;
+    const shift = shiftRadio.value;
+    const rentalType = rentalRadio.value;
+
+    let base = 18000;
+    let bookerNameText = '';
+
+    if (bookerType === 'general') {
+      base = 18000;
+      bookerNameText = '{{ app()->getLocale() === 'bn' ? "সাধারণ (বহিরাগত)" : "General Public (Outsider)" }}';
+    } else if (bookerType === 'staff') {
+      base = 5000;
+      bookerNameText = '{{ app()->getLocale() === 'bn' ? "চবক কর্মকর্তা-কর্মচারী" : "CPA Staff" }}';
+    } else if (bookerType === 'member') {
+      base = 3000;
+      bookerNameText = '{{ app()->getLocale() === 'bn' ? "রিপাবলিক ক্লাব সদস্য" : "Republic Club Member" }}';
+    }
+
+    sumBookerTitle.textContent = bookerNameText;
+    sumBaseRent.textContent = '৳' + base.toLocaleString();
+
+    let fieldRent = 0;
+    if (rentalType === 'hall_field') {
+      fieldRent = 10000;
+      sumFieldRow.style.display = 'flex';
+      sumFieldRent.textContent = '৳10,000';
+    } else {
+      sumFieldRow.style.display = 'none';
+    }
+
+    let electricityRent = 0;
+    if (shift === 'night') {
+      electricityRent = (bookerType === 'general') ? 2000 : 1500;
+      sumElectricityRow.style.display = 'flex';
+      sumElectricityRent.textContent = '৳' + electricityRent.toLocaleString();
+    } else {
+      sumElectricityRow.style.display = 'none';
+    }
+
+    const total = base + fieldRent + electricityRent;
+    const advance = Math.round(total / 2);
+
+    sumTotalPrice.textContent = '৳' + total.toLocaleString();
+    sumAdvanceAmt.textContent = '৳' + advance.toLocaleString();
+  }
+
+  // Initial calculation
+  calculatePrice();
 
   // Availability check
   let availTimer = null;
@@ -389,15 +514,15 @@
   });
 
   function checkAvailability() {
-    const date    = dateInput.value;
-    const pkgRadio = document.querySelector('.pkg-radio-input:checked');
-    if (!date || !pkgRadio) return;
+    const date  = dateInput.value;
+    const shiftRadio = document.querySelector('input[name="booking_shift"]:checked');
+    if (!date || !shiftRadio) return;
 
     statusDiv.className = 'availability-badge checking';
     statusDiv.textContent = '{{ __("site.checking_availability") }}';
     statusDiv.style.display = 'block';
 
-    fetch('{{ route("booking.availability") }}?date=' + encodeURIComponent(date) + '&package_id=' + pkgRadio.value)
+    fetch('{{ route("booking.availability") }}?date=' + encodeURIComponent(date) + '&shift=' + shiftRadio.value)
       .then(r => r.json())
       .then(data => {
         statusDiv.className = 'availability-badge ' + (data.available ? 'available' : 'unavailable');

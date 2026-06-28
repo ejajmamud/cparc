@@ -43,14 +43,48 @@ class BookingResource extends Resource
             ]),
 
             Section::make('Event Details')->columns(2)->schema([
-                Forms\Components\Select::make('package_id')
-                    ->label('Package')
-                    ->options(Package::where('is_active', true)->pluck('name', 'id'))
+                Forms\Components\Select::make('booker_type')
+                    ->options([
+                        'general' => 'General Public (Outsider)',
+                        'staff'   => 'CPA Staff',
+                        'member'  => 'Republic Club Member',
+                    ])
                     ->required()
                     ->live()
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        $pkg = Package::find($state);
-                        if ($pkg) $set('total_amount', $pkg->price);
+                    ->afterStateUpdated(function (callable $set, callable $get) {
+                        $set('total_amount', Booking::calculatePrice(
+                            $get('booker_type') ?? 'general',
+                            $get('booking_shift') ?? 'day',
+                            $get('rental_type') ?? 'hall'
+                        ));
+                    }),
+                Forms\Components\Select::make('booking_shift')
+                    ->options([
+                        'day'   => 'Day Shift',
+                        'night' => 'Night Shift',
+                    ])
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function (callable $set, callable $get) {
+                        $set('total_amount', Booking::calculatePrice(
+                            $get('booker_type') ?? 'general',
+                            $get('booking_shift') ?? 'day',
+                            $get('rental_type') ?? 'hall'
+                        ));
+                    }),
+                Forms\Components\Select::make('rental_type')
+                    ->options([
+                        'hall'       => 'Only Hall',
+                        'hall_field' => 'Hall + Field',
+                    ])
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function (callable $set, callable $get) {
+                        $set('total_amount', Booking::calculatePrice(
+                            $get('booker_type') ?? 'general',
+                            $get('booking_shift') ?? 'day',
+                            $get('rental_type') ?? 'hall'
+                        ));
                     }),
                 Forms\Components\Select::make('event_type')
                     ->options([
@@ -95,7 +129,25 @@ class BookingResource extends Resource
                     ->color('primary'),
                 Tables\Columns\TextColumn::make('booker_name')->searchable()->label('Booker')->limit(25),
                 Tables\Columns\TextColumn::make('booker_phone')->label('Phone')->searchable(),
-                Tables\Columns\TextColumn::make('package.name')->label('Package')->badge(),
+                Tables\Columns\TextColumn::make('booker_type')->label('Category')->badge()
+                    ->formatStateUsing(fn($state) => match($state) {
+                        'general' => 'General (Outsider)',
+                        'staff'   => 'CPA Staff',
+                        'member'  => 'Club Member',
+                        default   => $state
+                    }),
+                Tables\Columns\TextColumn::make('booking_shift')->label('Shift')->badge()
+                    ->formatStateUsing(fn($state) => match($state) {
+                        'day'   => '☀️ Day',
+                        'night' => '🌙 Night',
+                        default => $state
+                    }),
+                Tables\Columns\TextColumn::make('rental_type')->label('Rental Option')->badge()
+                    ->formatStateUsing(fn($state) => match($state) {
+                        'hall'       => 'Hall Only',
+                        'hall_field' => 'Hall + Field',
+                        default      => $state
+                    }),
                 Tables\Columns\TextColumn::make('event_type')->label('Event')
                     ->formatStateUsing(fn($state) => ucfirst($state))->badge(),
                 Tables\Columns\TextColumn::make('event_date')->label('Date')->date('d M Y')->sortable(),
@@ -122,9 +174,17 @@ class BookingResource extends Resource
                         'cancelled' => 'Cancelled',
                         'completed' => 'Completed',
                     ]),
-                Tables\Filters\SelectFilter::make('package_id')
-                    ->label('Package')
-                    ->relationship('package', 'name'),
+                Tables\Filters\SelectFilter::make('booker_type')
+                    ->options([
+                        'general' => 'General (Outsider)',
+                        'staff'   => 'CPA Staff',
+                        'member'  => 'Club Member',
+                    ]),
+                Tables\Filters\SelectFilter::make('booking_shift')
+                    ->options([
+                        'day'   => 'Day Shift',
+                        'night' => 'Night Shift',
+                    ]),
                 Tables\Filters\Filter::make('event_date')
                     ->form([
                         Forms\Components\DatePicker::make('from')->label('From Date'),

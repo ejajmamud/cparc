@@ -93,7 +93,10 @@ return [
     'event_other'             => 'অন্যান্য',
     'optional'                => 'ঐচ্ছিক',
     'package_price'           => 'প্যাকেজ মূল্য',
-    'advance_required'        => 'অগ্রিম প্রয়োজন (৫০%)',
+    'advance_required'        => 'অগ্রিম প্রয়োজন',
+    'booker_type'             => 'আবেদনকারীর ধরণ',
+    'booking_shift'           => 'বুকিং শিফট',
+    'rental_type'             => 'ভাড়ার ধরণ',
 
     // Notices
     'general'              => 'সাধারণ',

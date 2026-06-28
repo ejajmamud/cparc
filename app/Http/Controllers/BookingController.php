@@ -20,12 +20,13 @@ class BookingController extends Controller
     public function checkAvailability(Request $request): JsonResponse
     {
         $request->validate([
-            'date'       => 'required|date|after_or_equal:today',
-            'package_id' => 'required|exists:packages,id',
+            'date'  => 'required|date|after_or_equal:today',
+            'shift' => 'required|in:day,night',
         ]);
 
-        $available = Booking::isDateAvailable($request->date, $request->package_id);
+        $available = Booking::isDateAvailable($request->date, $request->shift);
         $bookedCount = Booking::where('event_date', $request->date)
+            ->where('booking_shift', $request->shift)
             ->whereIn('status', ['pending', 'confirmed'])
             ->count();
 
@@ -46,7 +47,10 @@ class BookingController extends Controller
             'booker_email'    => 'nullable|email|max:100',
             'booker_address'  => 'nullable|string|max:500',
             'booker_nid'      => 'nullable|string|max:30',
-            'package_id'      => 'required|exists:packages,id',
+            'package_id'      => 'nullable|exists:packages,id',
+            'booking_shift'   => 'required|in:day,night',
+            'rental_type'     => 'required|in:hall,hall_field',
+            'booker_type'     => 'required|in:general,staff,member',
             'event_type'      => 'required|string',
             'event_type_other'=> 'nullable|string|max:100',
             'event_date'      => 'required|date|after_or_equal:today',
@@ -56,17 +60,23 @@ class BookingController extends Controller
             'special_requests'=> 'nullable|string|max:1000',
         ]);
 
-        if (!Booking::isDateAvailable($validated['event_date'], $validated['package_id'])) {
+        if (!Booking::isDateAvailable($validated['event_date'], $validated['booking_shift'])) {
             return back()->withInput()->withErrors([
                 'event_date' => __('site.date_unavailable'),
             ]);
         }
 
-        $package = Package::findOrFail($validated['package_id']);
+        // Calculate dynamic total price
+        $totalAmount = Booking::calculatePrice(
+            $validated['booker_type'],
+            $validated['booking_shift'],
+            $validated['rental_type']
+        );
 
         $booking = Booking::create(array_merge($validated, [
             'reference_number' => Booking::generateReference(),
-            'total_amount'     => $package->price,
+            'total_amount'     => $totalAmount,
+            'advance_paid'     => 0,
             'status'           => 'pending',
         ]));
 
@@ -75,9 +85,7 @@ class BookingController extends Controller
 
     public function confirm(string $ref)
     {
-        $booking = Booking::with('package')
-            ->where('reference_number', $ref)
-            ->firstOrFail();
+        $booking = Booking::where('reference_number', $ref)->firstOrFail();
 
         return view('booking.confirm', compact('booking'));
     }
