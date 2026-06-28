@@ -127,3 +127,248 @@
     </section>
   </div>
 </section>
+
+{{-- Mobile Sidebar Drawer --}}
+<div class="cprc-mobile-drawer" id="mobile-drawer">
+  <div class="cprc-drawer-header">
+    <a href="{{ url('/') }}" class="cprc-drawer-brand">
+      <img src="{{ asset('images/club/logo.jpeg') }}" alt="Logo" class="cprc-drawer-logo">
+      <span class="cprc-drawer-title">{{ app()->getLocale() === 'bn' ? 'সিপিআরসি' : 'CPRC' }}</span>
+    </a>
+    <button class="cprc-drawer-close" id="drawer-close">
+      <i class="ph ph-x"></i>
+    </button>
+  </div>
+  <div class="cprc-drawer-body">
+    <ul class="cprc-drawer-menu">
+      <li><a href="{{ url('/') }}"><i class="ph ph-house"></i> {{ __('site.home') }}</a></li>
+      <li>
+        <div class="cprc-drawer-submenu-header">
+          <span>{{ __('site.about') }}</span>
+          <i class="ph ph-caret-down"></i>
+        </div>
+        <ul class="cprc-drawer-submenu">
+          <li><a href="{{ route('about') }}">{{ app()->getLocale() === 'bn' ? 'ইতিহাস ও পটভূমি' : 'History & Background' }}</a></li>
+          <li><a href="{{ route('about') }}#mission">{{ app()->getLocale() === 'bn' ? 'লক্ষ্য ও উদ্দেশ্য' : 'Mission & Vision' }}</a></li>
+          <li><a href="{{ route('about') }}#facilities">{{ app()->getLocale() === 'bn' ? 'সুযোগ-সুবিধা' : 'Facilities' }}</a></li>
+          <li><a href="{{ route('members.index') }}">{{ __('site.members') }}</a></li>
+        </ul>
+      </li>
+      <li>
+        <div class="cprc-drawer-submenu-header">
+          <span>{{ __('site.packages') }}</span>
+          <i class="ph ph-caret-down"></i>
+        </div>
+        <ul class="cprc-drawer-submenu">
+          <li><a href="{{ route('packages.index') }}">{{ app()->getLocale() === 'bn' ? 'সকল প্যাকেজ' : 'View All Packages' }}</a></li>
+          <li><a href="{{ route('booking.form') }}">{{ app()->getLocale() === 'bn' ? 'হল বুক করুন' : 'Book the Hall' }}</a></li>
+          <li><a href="{{ route('contact') }}">{{ app()->getLocale() === 'bn' ? 'বুকিং অনুসন্ধান' : 'Booking Enquiry' }}</a></li>
+        </ul>
+      </li>
+      <li>
+        <div class="cprc-drawer-submenu-header">
+          <span>{{ __('site.notices') }}</span>
+          <i class="ph ph-caret-down"></i>
+        </div>
+        <ul class="cprc-drawer-submenu">
+          <li><a href="{{ route('notices.index') }}?type=general">{{ app()->getLocale() === 'bn' ? 'সাধারণ বিজ্ঞপ্তি' : 'General Notices' }}</a></li>
+          <li><a href="{{ route('notices.index') }}?type=tender">{{ app()->getLocale() === 'bn' ? 'দরপত্র' : 'Tenders' }}</a></li>
+          <li><a href="{{ route('notices.index') }}?type=recruitment">{{ app()->getLocale() === 'bn' ? 'নিয়োগ' : 'Recruitment' }}</a></li>
+        </ul>
+      </li>
+      <li>
+        <div class="cprc-drawer-submenu-header">
+          <span>{{ __('site.events') }}</span>
+          <i class="ph ph-caret-down"></i>
+        </div>
+        <ul class="cprc-drawer-submenu">
+          <li><a href="{{ route('events.index') }}?type=upcoming">{{ app()->getLocale() === 'bn' ? 'আসন্ন অনুষ্ঠান' : 'Upcoming Events' }}</a></li>
+          <li><a href="{{ route('events.index') }}?type=past">{{ app()->getLocale() === 'bn' ? 'অতীত অনুষ্ঠান' : 'Past Events' }}</a></li>
+        </ul>
+      </li>
+      <li><a href="{{ route('gallery.index') }}">{{ __('site.gallery') }}</a></li>
+      <li><a href="{{ route('news.index') }}">{{ __('site.news') }}</a></li>
+      <li><a href="{{ route('contact') }}">{{ __('site.contact') }}</a></li>
+    </ul>
+  </div>
+</div>
+<div class="cprc-drawer-overlay" id="drawer-overlay"></div>
+
+<style>
+/* Mobile Drawer CSS Styles */
+.cprc-mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: -310px;
+  width: 300px;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+  z-index: 99999;
+  transition: right 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+.cprc-mobile-drawer.open {
+  right: 0;
+}
+.cprc-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 99998;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.cprc-drawer-overlay.open {
+  display: block;
+  opacity: 1;
+}
+.cprc-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f3f5;
+  background: #0B2545;
+}
+.cprc-drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.cprc-drawer-logo {
+  height: 36px;
+  width: auto;
+  border-radius: 4px;
+}
+.cprc-drawer-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.cprc-drawer-close {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cprc-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+.cprc-drawer-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cprc-drawer-menu li {
+  margin: 0;
+  padding: 0;
+}
+.cprc-drawer-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #333333;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.cprc-drawer-menu li a:hover {
+  background: #f1f3f5;
+}
+.cprc-drawer-submenu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  color: #333333;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.cprc-drawer-submenu-header:hover {
+  background: #f1f3f5;
+}
+.cprc-drawer-submenu {
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 4px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  border-left: 2px solid #e9ecef;
+}
+.cprc-drawer-submenu.open {
+  display: flex;
+}
+.cprc-drawer-submenu li a {
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  color: #555555;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const toggleBtn = document.getElementById('menu-toggle');
+  const closeBtn = document.getElementById('drawer-close');
+  const drawer = document.getElementById('mobile-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+
+  if (toggleBtn && drawer && overlay) {
+    toggleBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+      overlay.style.display = 'block';
+    });
+
+    const closeDrawer = function () {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      setTimeout(() => {
+        if (!overlay.classList.contains('open')) {
+          overlay.style.display = 'none';
+        }
+      }, 300);
+    };
+
+    closeBtn.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+  }
+
+  // Handle submenu toggles inside mobile drawer
+  const submenuHeaders = document.querySelectorAll('.cprc-drawer-submenu-header');
+  submenuHeaders.forEach(header => {
+    header.addEventListener('click', function () {
+      const submenu = this.nextElementSibling;
+      const icon = this.querySelector('i');
+      if (submenu) {
+        submenu.classList.toggle('open');
+        if (icon) {
+          icon.classList.toggle('ph-caret-down');
+          icon.classList.toggle('ph-caret-up');
+        }
+      }
+    });
+  });
+});
+</script>
