@@ -43,6 +43,29 @@
   .member-img-wrap img.loaded {
     filter: none;
   }
+  
+  @media (max-width: 600px) {
+    .member-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .member-img-wrap {
+      height: auto;
+      aspect-ratio: 1 / 1;
+    }
+    .member-img-wrap img {
+      height: 100%;
+    }
+    .member-name {
+      font-size: 0.85rem;
+    }
+    .member-designation {
+      font-size: 0.75rem;
+    }
+    .member-contact {
+      font-size: 0.7rem;
+    }
+  }
   .member-info {
     padding: 12px 14px;
   }
