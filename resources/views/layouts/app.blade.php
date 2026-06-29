@@ -149,8 +149,49 @@
       --typography-body-font-size: 14px;
     }
 
-    html[lang="bn"], html[lang="bn"] body, html[lang="bn"] *:not(.ph):not([class^="ph-"]):not([class*=" ph-"]), html[lang="bn"] input, html[lang="bn"] button, html[lang="bn"] textarea, html[lang="bn"] select {
-      font-family: '{{ $banglaFont }}', sans-serif !important;
+    /* ── Bangla font for BN locale ─────────────────────────────────────────── */
+    html[lang="bn"] body,
+    html[lang="bn"] p,
+    html[lang="bn"] span,
+    html[lang="bn"] div,
+    html[lang="bn"] h1,
+    html[lang="bn"] h2,
+    html[lang="bn"] h3,
+    html[lang="bn"] h4,
+    html[lang="bn"] h5,
+    html[lang="bn"] h6,
+    html[lang="bn"] a,
+    html[lang="bn"] li,
+    html[lang="bn"] td,
+    html[lang="bn"] th,
+    html[lang="bn"] label,
+    html[lang="bn"] input,
+    html[lang="bn"] button,
+    html[lang="bn"] textarea,
+    html[lang="bn"] select {
+      font-family: '{{ $banglaFont }}', sans-serif;
+    }
+
+    /* ── ALWAYS protect icon fonts — never override with Bangla font ───────── */
+    i.ph,
+    i[class^="ph "],
+    i[class*=" ph "],
+    i[class^="ph-"],
+    .ph,
+    [class^="ph-"],
+    [class*=" ph-"],
+    i.ph::before,
+    [class^="ph-"]::before,
+    [class*=" ph-"]::before,
+    .ph::before {
+      font-family: "Phosphor" !important;
+    }
+    i.ph-fill,
+    [class^="ph-fill"],
+    [class*=" ph-fill"],
+    i.ph-fill::before,
+    [class^="ph-fill"]::before {
+      font-family: "Phosphor-Fill" !important;
     }
 
     *, *::before, *::after { box-sizing: border-box; }
