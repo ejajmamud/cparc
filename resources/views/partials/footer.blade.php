@@ -92,6 +92,11 @@
     {{-- Column 4: Contact --}}
     <div class="cprc-footer-col">
       <h4 class="cprc-footer-heading">{{ __('site.contact_us') }}</h4>
+      @php
+        $footerPhone = \App\Models\Setting::getVal('phone_number', '+880-31-2500000');
+        $footerWhatsapp = \App\Models\Setting::getVal('whatsapp_number', '+8801700000000');
+        $footerEmail = \App\Models\Setting::getVal('contact_email', 'info@cprc.cpa.gov.bd');
+      @endphp
       <ul class="cprc-footer-contact-list">
         <li>
           <i class="ph ph-map-pin"></i>
@@ -99,19 +104,15 @@
         </li>
         <li>
           <i class="ph ph-phone"></i>
-          <span>+880-31-2500000</span>
-        </li>
-        <li>
-          <i class="ph ph-phone"></i>
-          <span>+880-31-2500001</span>
+          <span>{{ $footerPhone }}</span>
         </li>
         <li>
           <i class="ph ph-whatsapp-logo"></i>
-          <a href="https://wa.me/8801XXXXXXXXX" style="color:inherit;">WhatsApp {{ app()->getLocale() === 'bn' ? 'যোগাযোগ' : 'Enquiry' }}</a>
+          <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $footerWhatsapp) }}" style="color:inherit;">WhatsApp {{ app()->getLocale() === 'bn' ? 'যোগাযোগ' : 'Enquiry' }}</a>
         </li>
         <li>
           <i class="ph ph-envelope"></i>
-          <a href="mailto:info@cprc.cpa.gov.bd" style="color:inherit;">info@cprc.cpa.gov.bd</a>
+          <a href="mailto:{{ $footerEmail }}" style="color:inherit;">{{ $footerEmail }}</a>
         </li>
         <li>
           <i class="ph ph-clock"></i>
@@ -123,7 +124,7 @@
       <div class="cprc-footer-social">
         <a href="#" class="cprc-fsoc-fb" aria-label="Facebook"><i class="ph ph-facebook-logo"></i></a>
         <a href="#" class="cprc-fsoc-yt" aria-label="YouTube"><i class="ph ph-youtube-logo"></i></a>
-        <a href="https://wa.me/8801XXXXXXXXX" class="cprc-fsoc-wa" aria-label="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>
+        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $footerWhatsapp) }}" class="cprc-fsoc-wa" aria-label="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>
       </div>
     </div>
 
