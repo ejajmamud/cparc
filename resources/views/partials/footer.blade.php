@@ -21,6 +21,24 @@
         @endif
       </p>
       <p class="cprc-footer-est">{{ __('site.established') }}</p>
+
+      {{-- Newsletter signup --}}
+      <div class="cprc-footer-newsletter">
+        <h5>{{ app()->getLocale() === 'bn' ? 'আপডেট পান' : 'Stay Updated' }}</h5>
+        @if(session('newsletter_success'))
+          <p class="newsletter-success">✓ {{ session('newsletter_success') }}</p>
+        @else
+          <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form" id="newsletterForm">
+            @csrf
+            <input type="email" name="email" required
+                   placeholder="{{ app()->getLocale() === 'bn' ? 'আপনার ইমেইল' : 'Your email' }}"
+                   class="newsletter-input">
+            <button type="submit" class="newsletter-btn">
+              <i class="ph ph-paper-plane-tilt"></i>
+            </button>
+          </form>
+        @endif
+      </div>
     </div>
 
     {{-- Column 2: Quick Links --}}
@@ -69,23 +87,6 @@
         {{ app()->getLocale() === 'bn' ? 'এখনই বুক করুন' : 'Book Hall Now' }}
       </a>
 
-      {{-- Newsletter signup --}}
-      <div class="cprc-footer-newsletter">
-        <h5>{{ app()->getLocale() === 'bn' ? 'আপডেট পান' : 'Stay Updated' }}</h5>
-        @if(session('newsletter_success'))
-          <p class="newsletter-success">✓ {{ session('newsletter_success') }}</p>
-        @else
-          <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form" id="newsletterForm">
-            @csrf
-            <input type="email" name="email" required
-                   placeholder="{{ app()->getLocale() === 'bn' ? 'আপনার ইমেইল' : 'Your email' }}"
-                   class="newsletter-input">
-            <button type="submit" class="newsletter-btn">
-              <i class="ph ph-paper-plane-tilt"></i>
-            </button>
-          </form>
-        @endif
-      </div>
     </div>
 
     {{-- Column 4: Contact --}}

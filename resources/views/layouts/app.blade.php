@@ -154,7 +154,38 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; }
-    body { overflow-x: hidden; font-family: var(--font-primary); font-size: 14px; line-height: 1.5; background: #f4f6f8 url('{{ asset('template/site-assets/images/bgpattern.png') }}') repeat; }
+    @php
+      $bgType           = \App\Models\Setting::getVal('bg_type', 'white');
+      $bgImage          = \App\Models\Setting::getVal('bg_pattern_image');
+      $bgOpacity        = max(5, min(100, (int) \App\Models\Setting::getVal('bg_opacity', 30))) / 100;
+      $bgOverlayColor   = \App\Models\Setting::getVal('bg_overlay_color', '#ffffff');
+      $bgOverlayOpacity = max(0, min(90, (int) \App\Models\Setting::getVal('bg_overlay_opacity', 0))) / 100;
+    @endphp
+    body { overflow-x: hidden; font-family: var(--font-primary); font-size: 14px; line-height: 1.5; background-color: #f4f6f8; position: relative; }
+    @if($bgType === 'photo' && $bgImage)
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image: url('{{ asset('storage/' . $bgImage) }}');
+      background-repeat: repeat;
+      background-size: auto;
+      opacity: {{ $bgOpacity }};
+      pointer-events: none;
+    }
+    @if($bgOverlayOpacity > 0)
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-color: {{ $bgOverlayColor }};
+      opacity: {{ $bgOverlayOpacity }};
+      pointer-events: none;
+    }
+    @endif
+    @endif
     a {
       color: inherit;
       text-decoration: none;
