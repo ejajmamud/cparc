@@ -67,7 +67,7 @@
   {{-- Preconnect fonts --}}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   {{-- CPRC theme variables --}}
   <style>
@@ -119,12 +119,16 @@
       --text-small: 0.78rem;
       --text-medium: 0.9rem;
       --text-large: 1.1rem;
-      --font-primary: 'Noto Sans Bengali', 'Noto Sans', sans-serif;
-      --font-heading: 'Noto Sans Bengali', 'Noto Sans', sans-serif;
+      --font-primary: 'Hind Siliguri', 'Noto Sans', sans-serif;
+      --font-heading: 'Hind Siliguri', 'Noto Sans', sans-serif;
       --typography-h1-font-size: 30px;
       --typography-h2-font-size: 24px;
       --typography-h3-font-size: 20px;
       --typography-body-font-size: 14px;
+    }
+
+    html[lang="bn"], html[lang="bn"] body, html[lang="bn"] *, html[lang="bn"] input, html[lang="bn"] button, html[lang="bn"] textarea, html[lang="bn"] select {
+      font-family: 'Hind Siliguri', sans-serif !important;
     }
 
     *, *::before, *::after { box-sizing: border-box; }

@@ -33,11 +33,12 @@ class NewsArticleResource extends Resource
             ]),
             Section::make('বাংলা (Bengali)')->columns(1)->schema([
                 Forms\Components\TextInput::make('title_bn')->label('Title (Bengali)'),
-                Forms\Components\Textarea::make('content_bn')->label('Content (Bengali)')->rows(5),
+                Forms\Components\RichEditor::make('content_bn')->label('Content (Bengali)')->columnSpanFull(),
             ]),
-            Section::make('Settings')->columns(2)->schema([
+            Section::make('Settings & Media')->columns(2)->schema([
                 Forms\Components\Toggle::make('is_published')->default(true),
                 Forms\Components\DateTimePicker::make('published_at')->default(now()),
+                Forms\Components\FileUpload::make('image')->image()->directory('news')->label('Featured Image')->disk('public')->columnSpanFull(),
             ]),
         ]);
     }
