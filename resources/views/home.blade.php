@@ -32,9 +32,17 @@
 
 <section class="cprc-hero-slider" style="--slide-count:{{ $slideCount }};--slide-duration:{{ $duration }}s;--total-time:{{ $totalTime }}s;">
 
-  {{-- Slides --}}
+  {{-- Slides: first slide loaded immediately, rest deferred via data-bg --}}
   @foreach($heroSlides as $i => $slide)
-    <div class="cprc-hero-slide" style="animation-delay:{{ $i * $duration }}s;background-image:url('{{ (str_contains($slide, '/') && !str_starts_with($slide, 'images/')) ? asset('storage/'.$slide) : ($heroIsAdmin ? asset($slide) : asset('images/club/'.$slide)) }}');" aria-hidden="{{ $i > 0 ? 'true' : 'false' }}"></div>
+    @php
+      $slideUrl = (str_contains($slide, '/') && !str_starts_with($slide, 'images/'))
+        ? asset('storage/'.$slide)
+        : ($heroIsAdmin ? asset($slide) : asset('images/club/'.$slide));
+    @endphp
+    <div class="cprc-hero-slide {{ $i === 0 ? 'cprc-slide-loaded' : '' }}"
+         style="animation-delay:{{ $i * $duration }}s;{{ $i === 0 ? 'background-image:url(\''.$slideUrl.'\')' : '' }}"
+         data-bg="{{ $slideUrl }}"
+         aria-hidden="{{ $i > 0 ? 'true' : 'false' }}"></div>
   @endforeach
 
   {{-- Overlay with club identity --}}
@@ -87,16 +95,34 @@
   let current     = 0;
   let timer       = null;
 
+  // Lazy load a slide's background image from data-bg
+  function loadSlide(idx) {
+    const el = slides[idx];
+    if (!el || el.dataset.bgLoaded) return;
+    const url = el.dataset.bg;
+    if (!url) return;
+    el.style.backgroundImage = "url('" + url + "')";
+    el.dataset.bgLoaded = '1';
+  }
+
   function goTo(index) {
     slides[current].classList.remove('active');
-    dots[current].classList.remove('active');
-    dots[current].setAttribute('aria-selected', 'false');
+    if (dots[current]) {
+      dots[current].classList.remove('active');
+      dots[current].setAttribute('aria-selected', 'false');
+    }
 
     current = (index + total) % total;
 
+    // Load current + preload next
+    loadSlide(current);
+    loadSlide((current + 1) % total);
+
     slides[current].classList.add('active');
-    dots[current].classList.add('active');
-    dots[current].setAttribute('aria-selected', 'true');
+    if (dots[current]) {
+      dots[current].classList.add('active');
+      dots[current].setAttribute('aria-selected', 'true');
+    }
   }
 
   function startAuto() {
@@ -112,9 +138,18 @@
     });
   });
 
-  // Init
+  // Init: slide 0 already has bg from inline style; preload slide 1
+  loadSlide(0);
+  loadSlide(1);
   goTo(0);
   startAuto();
+
+  // After page load, preload all remaining slides in background
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      for (let i = 2; i < total; i++) loadSlide(i);
+    }, 2000); // 2s delay so it doesn't compete with LCP
+  });
 })();
 </script>
 @endpush
