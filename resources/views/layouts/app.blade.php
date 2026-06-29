@@ -154,7 +154,7 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; }
-    body { overflow-x: hidden; font-family: var(--font-primary); font-size: 14px; line-height: 1.5; background: #f4f6f8; }
+    body { overflow-x: hidden; font-family: var(--font-primary); font-size: 14px; line-height: 1.5; background: #f4f6f8 url('{{ asset('template/site-assets/images/bgpattern.png') }}') repeat; }
     a {
       color: inherit;
       text-decoration: none;
