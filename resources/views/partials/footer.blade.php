@@ -43,27 +43,26 @@
     <div class="cprc-footer-col">
       <h4 class="cprc-footer-heading">{{ __('site.hall_booking') }}</h4>
       <div class="cprc-footer-packages">
-        <div class="cprc-footer-pkg">
-          <i class="ph ph-clock"></i>
-          <div>
-            <strong>{{ app()->getLocale() === 'bn' ? 'হাফ ডে (৬ ঘণ্টা)' : 'Half Day (6 hrs)' }}</strong>
-            <span>{{ app()->getLocale() === 'bn' ? '৳৩০,০০০ থেকে শুরু' : 'From ৳30,000' }}</span>
+        @foreach(\App\Models\Package::where('is_active', true)->orderBy('sort_order')->take(3)->get() as $pkg)
+          @php
+            $pkgName = app()->getLocale() === 'bn' && $pkg->name_bn ? $pkg->name_bn : $pkg->name;
+            $iconClass = 'ph ph-tag';
+            if (str_contains(strtolower($pkg->slug), 'general') || str_contains(strtolower($pkg->slug), 'outsider')) {
+                $iconClass = 'ph ph-users';
+            } elseif (str_contains(strtolower($pkg->slug), 'staff')) {
+                $iconClass = 'ph ph-anchor';
+            } elseif (str_contains(strtolower($pkg->slug), 'member')) {
+                $iconClass = 'ph ph-identification-card';
+            }
+          @endphp
+          <div class="cprc-footer-pkg">
+            <i class="{{ $iconClass }}"></i>
+            <div>
+              <strong>{{ $pkgName }}</strong>
+              <span>{{ app()->getLocale() === 'bn' ? '৳' . number_format($pkg->price) . ' থেকে শুরু' : 'From ৳' . number_format($pkg->price) }}</span>
+            </div>
           </div>
-        </div>
-        <div class="cprc-footer-pkg">
-          <i class="ph ph-sun"></i>
-          <div>
-            <strong>{{ app()->getLocale() === 'bn' ? 'ফুল ডে (১২ ঘণ্টা)' : 'Full Day (12 hrs)' }}</strong>
-            <span>{{ app()->getLocale() === 'bn' ? '৳৫৫,০০০ থেকে শুরু' : 'From ৳55,000' }}</span>
-          </div>
-        </div>
-        <div class="cprc-footer-pkg">
-          <i class="ph ph-moon-stars"></i>
-          <div>
-            <strong>{{ app()->getLocale() === 'bn' ? 'গ্র্যান্ড (২৪ ঘণ্টা)' : 'Grand (24 hrs)' }}</strong>
-            <span>{{ app()->getLocale() === 'bn' ? '৳৯০,০০০ থেকে শুরু' : 'From ৳90,000' }}</span>
-          </div>
-        </div>
+        @endforeach
       </div>
       <a href="{{ route('booking.form') }}" class="cprc-footer-book-btn">
         <i class="ph ph-calendar-check"></i>
