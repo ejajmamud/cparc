@@ -91,8 +91,14 @@
   <link href="{{ $fontImportUrl }}" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  {{-- Load Phosphor icons FIRST — @font-face declared before any overrides --}}
+  <link rel="preload" href="{{ asset('template/site-assets/fonts/Phosphor.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ asset('template/site-assets/css/phosphor.css') }}">
+  <link rel="stylesheet" href="{{ asset('template/site-assets/css/phosphor-fill.css') }}">
+
   {{-- CPRC theme variables --}}
   <style>
+
     html {
       --color-primary-bg: #003087;
       --color-primary-light: #1a4fa0;
@@ -276,9 +282,7 @@
     }
   </style>
 
-  {{-- Template widget CSS --}}
-  <link rel="stylesheet" href="{{ asset('template/site-assets/css/phosphor.css') }}">
-  <link rel="stylesheet" href="{{ asset('template/site-assets/css/phosphor-fill.css') }}">
+  {{-- Template widget CSS (phosphor already loaded in head) --}}
   <link rel="stylesheet" href="{{ asset('template/site-assets/css/index.css') }}">
   <link rel="stylesheet" href="{{ asset('template/widget-assets/css/HeaderWidget.css') }}">
   <link rel="stylesheet" href="{{ asset('template/widget-assets/css/BannerSliderImageWidget.css') }}">
