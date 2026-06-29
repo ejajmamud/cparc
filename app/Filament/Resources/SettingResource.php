@@ -58,19 +58,10 @@ class SettingResource extends Resource
                 ->revealable()
                 ->visible(fn ($record) => $record && $record->key === 'smtp_password'),
 
-            // FileUpload for bg_pattern_image
-            Forms\Components\FileUpload::make('value')
-                ->label('Background Pattern Image')
-                ->image()
-                ->directory('settings')
-                ->disk('public')
-                ->visible(fn ($record) => $record && $record->key === 'bg_pattern_image')
-                ->required(),
-
             // Standard input for other settings
             Forms\Components\TextInput::make('value')
                 ->label('Setting Value')
-                ->visible(fn ($record) => $record && !in_array($record->key, ['bangla_font', 'smtp_encryption', 'smtp_password', 'bg_pattern_image']))
+                ->visible(fn ($record) => $record && !in_array($record->key, ['bangla_font', 'smtp_encryption', 'smtp_password']))
                 ->required(),
         ]);
     }
@@ -94,7 +85,6 @@ class SettingResource extends Resource
                         'smtp_encryption' => 'Mail Server SMTP Transport Encryption protocol',
                         'smtp_from_address' => 'E-mail Sender From Address',
                         'smtp_from_name' => 'E-mail Sender From Name Displayed',
-                        'bg_pattern_image' => 'Repeating background pattern image file',
                         default => '',
                     })
                     ->searchable(),

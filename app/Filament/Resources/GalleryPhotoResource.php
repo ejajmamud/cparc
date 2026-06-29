@@ -36,9 +36,7 @@ class GalleryPhotoResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('path')->label('Photo')
-                    ->url(fn($record) => str_contains($record->path ?? '', '/')
-                        ? asset('storage/' . $record->path)
-                        : asset($record->path ?? '')),
+                    ->getStateUsing(fn($record) => (str_contains($record->path, '/') && !str_starts_with($record->path, 'images/')) ? asset('storage/' . $record->path) : asset($record->path)),
                 Tables\Columns\TextColumn::make('album.name')->label('Album'),
                 Tables\Columns\TextColumn::make('caption')->limit(40),
                 Tables\Columns\TextColumn::make('sort_order')->sortable(),

@@ -35,9 +35,7 @@ class BannerImageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('path')->label('Image')
-                    ->url(fn($record) => str_contains($record->path ?? '', '/')
-                        ? asset('storage/' . $record->path)
-                        : asset($record->path ?? '')),
+                    ->getStateUsing(fn($record) => (str_contains($record->path, '/') && !str_starts_with($record->path, 'images/')) ? asset('storage/' . $record->path) : asset($record->path)),
                 Tables\Columns\TextColumn::make('path')->label('File')->limit(50),
                 Tables\Columns\TextColumn::make('caption'),
                 Tables\Columns\TextColumn::make('sort_order')->sortable(),
