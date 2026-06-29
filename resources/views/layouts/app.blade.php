@@ -127,7 +127,7 @@
       --typography-body-font-size: 14px;
     }
 
-    html[lang="bn"], html[lang="bn"] body, html[lang="bn"] *, html[lang="bn"] input, html[lang="bn"] button, html[lang="bn"] textarea, html[lang="bn"] select {
+    html[lang="bn"], html[lang="bn"] body, html[lang="bn"] *:not(.ph):not([class^="ph-"]):not([class*=" ph-"]), html[lang="bn"] input, html[lang="bn"] button, html[lang="bn"] textarea, html[lang="bn"] select {
       font-family: 'Hind Siliguri', sans-serif !important;
     }
 
