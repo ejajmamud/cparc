@@ -41,8 +41,8 @@ class BookingResource extends Resource
                 Forms\Components\TextInput::make('booker_nid')->label('NID'),
                 Forms\Components\FileUpload::make('verification_document')
                     ->label('Verification Document')
+                    ->disk('public')
                     ->directory('bookings/documents')
-                    ->visibility('public')
                     ->downloadable()
                     ->openable()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf']),

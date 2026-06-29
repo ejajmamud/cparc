@@ -36,7 +36,7 @@ class MemberResource extends Resource
                 Forms\Components\Select::make('type')->options(['executive'=>'Executive Committee','former_president'=>'Former President','honorary'=>'Honorary'])->default('executive'),
                 Forms\Components\TextInput::make('sort_order')->numeric()->default(0),
                 Forms\Components\Toggle::make('is_published')->default(true),
-                Forms\Components\FileUpload::make('photo')->image()->directory('members')->imageResizeMode('cover')->imageCropAspectRatio('3:4'),
+                Forms\Components\FileUpload::make('photo')->image()->disk('public')->directory('members')->imageResizeMode('cover')->imageCropAspectRatio('3:4'),
             ]),
         ]);
     }

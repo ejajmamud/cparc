@@ -24,7 +24,7 @@ class GalleryPhotoResource extends Resource
         return $schema->schema([
             Forms\Components\Select::make('gallery_album_id')->label('Album')
                 ->options(GalleryAlbum::pluck('name', 'id'))->searchable()->required(),
-            Forms\Components\FileUpload::make('path')->image()->directory('gallery')->required(),
+            Forms\Components\FileUpload::make('path')->image()->disk('public')->directory('gallery')->required(),
             Forms\Components\TextInput::make('caption'),
             Forms\Components\TextInput::make('sort_order')->numeric()->default(0),
             Forms\Components\Toggle::make('is_published')->default(true),

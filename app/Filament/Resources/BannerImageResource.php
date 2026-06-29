@@ -22,7 +22,7 @@ class BannerImageResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-            Forms\Components\FileUpload::make('path')->image()->directory('banners')->required(),
+            Forms\Components\FileUpload::make('path')->image()->disk('public')->directory('banners')->required(),
             Forms\Components\TextInput::make('caption'),
             Forms\Components\TextInput::make('link'),
             Forms\Components\TextInput::make('sort_order')->numeric()->default(0),

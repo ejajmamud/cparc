@@ -48,7 +48,7 @@ class EventResource extends Resource
                 Forms\Components\TextInput::make('age_limit')->label('Age Limit (e.g. 18+, All ages)')->placeholder('All ages'),
             ]),
             Section::make('Media & Settings')->columns(2)->schema([
-                Forms\Components\FileUpload::make('image')->image()->directory('events')->label('Event Image'),
+                Forms\Components\FileUpload::make('image')->image()->disk('public')->directory('events')->label('Event Image'),
                 Forms\Components\TextInput::make('expected_guests')->numeric()->label('Expected Guests'),
                 Forms\Components\Select::make('tags')
                     ->label('Tags')
