@@ -106,53 +106,73 @@ Route::get('/extract-storage', function() {
         return response()->json(['error' => 'storage.zip not found in base path: ' . $zipPath]);
     }
     
-    if (!class_exists('ZipArchive')) {
-        return response()->json(['error' => 'ZipArchive extension not installed']);
+    $success = false;
+    $output = '';
+    
+    if (class_exists('ZipArchive')) {
+        $zip = new ZipArchive;
+        $res = $zip->open($zipPath);
+        if ($res === TRUE) {
+            if (!file_exists($extractPath)) {
+                mkdir($extractPath, 0777, true);
+            }
+            $zip->extractTo($extractPath);
+            $zip->close();
+            $success = true;
+            $output = 'Extracted via ZipArchive';
+        } else {
+            $output = 'ZipArchive open failed, code: ' . $res;
+        }
     }
     
-    $zip = new ZipArchive;
-    $res = $zip->open($zipPath);
-    if ($res === TRUE) {
+    if (!$success) {
         if (!file_exists($extractPath)) {
             mkdir($extractPath, 0777, true);
         }
-        
-        $zip->extractTo($extractPath);
-        $zip->close();
-        
-        // Convert Windows backslashes in filenames to Linux directory structures
-        if (file_exists($extractPath) && is_dir($extractPath)) {
-            $files = scandir($extractPath);
-            foreach ($files as $file) {
-                if (str_contains($file, '\\')) {
-                    $newPath = str_replace('\\', '/', $file);
-                    $fullNewPath = $extractPath . '/' . $newPath;
-                    $fullOldPath = $extractPath . '/' . $file;
-                    
-                    $dir = dirname($fullNewPath);
-                    if (!file_exists($dir)) {
-                        @mkdir($dir, 0777, true);
-                    }
-                    @rename($fullOldPath, $fullNewPath);
+        $cmd = "unzip -o " . escapeshellarg($zipPath) . " -d " . escapeshellarg($extractPath) . " 2>&1";
+        $shellOut = shell_exec($cmd);
+        if (str_contains(strtolower($shellOut), 'extracting') || str_contains(strtolower($shellOut), 'inflating')) {
+            $success = true;
+            $output = 'Extracted via shell unzip';
+        } else {
+            return response()->json([
+                'error' => 'All extraction methods failed',
+                'ziparchive_status' => $output,
+                'shell_output' => $shellOut
+            ]);
+        }
+    }
+    
+    // Convert Windows backslashes in filenames to Linux directory structures
+    if (file_exists($extractPath) && is_dir($extractPath)) {
+        $files = scandir($extractPath);
+        foreach ($files as $file) {
+            if (str_contains($file, '\\')) {
+                $newPath = str_replace('\\', '/', $file);
+                $fullNewPath = $extractPath . '/' . $newPath;
+                $fullOldPath = $extractPath . '/' . $file;
+                
+                $dir = dirname($fullNewPath);
+                if (!file_exists($dir)) {
+                    @mkdir($dir, 0777, true);
                 }
+                @rename($fullOldPath, $fullNewPath);
             }
         }
-        
-        // Change permissions to allow writes
-        try {
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($extractPath, RecursiveDirectoryIterator::SKIP_DOTS),
-                RecursiveIteratorIterator::SELF_FIRST
-            );
-            foreach ($iterator as $item) {
-                @chmod($item, 0777);
-            }
-        } catch (\Exception $e) {}
-        
-        return response()->json(['status' => 'SUCCESS', 'message' => 'Extracted to ' . $extractPath]);
-    } else {
-        return response()->json(['error' => 'Failed to open zip file, code: ' . $res]);
     }
+    
+    // Change permissions to allow writes
+    try {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($extractPath, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+        foreach ($iterator as $item) {
+            @chmod($item, 0777);
+        }
+    } catch (\Exception $e) {}
+    
+    return response()->json(['status' => 'SUCCESS', 'message' => $output]);
 });
 
 Route::get('/test-image', function() {
