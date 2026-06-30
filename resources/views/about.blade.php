@@ -63,6 +63,69 @@
         @endif
       </section>
 
+      {{-- Facilities --}}
+      <section class="widget block-widget" id="facilities" style="background:#fff; border-radius:var(--radius-medium); padding:var(--spacing-large); box-shadow:var(--shadow-small); margin-bottom:var(--spacing-large);">
+        @if(app()->getLocale() === 'bn')
+          <h2 style="color:var(--color-primary-bg); border-bottom:2px solid var(--color-primary-bg); padding-bottom:8px; margin-bottom:var(--spacing-medium);">
+            <i class="ph ph-buildings"></i> সুযোগ-সুবিধা ও অবকাঠামো
+          </h2>
+          <p style="margin-bottom:var(--spacing-medium);">চট্টগ্রাম বন্দর রিপাবলিক ক্লাব তার সদস্য ও অতিথিদের জন্য আধুনিক ও পূর্ণাঙ্গ সুযোগ-সুবিধা নিশ্চিত করে। নিচে ক্লাবের প্রধান অবকাঠামো ও সেবাসমূহ তুলে ধরা হলো:</p>
+          <div class="container-row" style="gap:var(--spacing-medium);">
+            @foreach([
+              ['ph-building','বিশাল অনুষ্ঠান হল','১,০০০ আসনবিশিষ্ট শীতাতপ নিয়ন্ত্রিত মিলনায়তন, বিবাহ অনুষ্ঠান, সেমিনার ও কর্পোরেট ইভেন্টের জন্য উপযুক্ত।'],
+              ['ph-grass','উন্মুক্ত মাঠ ও লন','প্রায় ২ একর উন্মুক্ত খেলার মাঠ, বহিরাঙ্গন অনুষ্ঠান ও ক্রীড়া আয়োজনের জন্য ব্যবহারযোগ্য।'],
+              ['ph-fork-knife','রেস্তোরাঁ ও ক্যাটারিং','প্রশিক্ষিত শেফ দ্বারা পরিচালিত ইন-হাউস রেস্তোরাঁ, বিভিন্ন অনুষ্ঠানে ক্যাটারিং সেবা প্রদান করে।'],
+              ['ph-monitor-play','অডিও-ভিজ্যুয়াল সরঞ্জাম','আধুনিক প্রজেক্টর, এলইডি স্ক্রিন, সাউন্ড সিস্টেম ও স্টেজ আলোকসজ্জার সম্পূর্ণ ব্যবস্থা।'],
+              ['ph-car','পার্কিং সুবিধা','প্রায় ২০০টি যানবাহনের জন্য নিরাপদ পার্কিং এরিয়া, ২৪ ঘণ্টা নিরাপত্তা প্রহরায়।'],
+              ['ph-first-aid','জেনারেটর ও বিদ্যুৎ ব্যবস্থা','নিরবচ্ছিন্ন বিদ্যুৎ সরবরাহের জন্য উচ্চক্ষমতাসম্পন্ন জেনারেটর সুবিধা।'],
+              ['ph-wifi','ওয়াই-ফাই ইন্টারনেট','সম্পূর্ণ ক্লাব প্রাঙ্গণে হাই-স্পিড ওয়্যারলেস ইন্টারনেট সংযোগ।'],
+              ['ph-toilet','পরিচ্ছন্ন ওয়াশরুম','পুরুষ ও মহিলাদের জন্য পৃথক পরিষ্কার-পরিচ্ছন্ন ওয়াশরুম সুবিধা।'],
+              ['ph-baby','শিশু বিনোদন কর্নার','শিশুদের জন্য বিশেষ খেলার জায়গা ও বিনোদন কর্নার।'],
+              ['ph-lock','নিরাপত্তা ব্যবস্থা','সিসিটিভি ক্যামেরা ও প্রশিক্ষিত নিরাপত্তাকর্মী দ্বারা পুরো প্রাঙ্গণ সুরক্ষিত।'],
+            ] as [$icon, $title, $desc])
+            <div class="container-col-6" style="margin-bottom:var(--spacing-medium);">
+              <div style="display:flex;gap:12px;align-items:flex-start;background:#f8f9fa;border-radius:var(--radius-small);padding:16px;">
+                <i class="ph {{ $icon }}" style="font-size:1.8rem;color:var(--color-primary-bg);flex-shrink:0;margin-top:2px;"></i>
+                <div>
+                  <strong style="display:block;margin-bottom:4px;color:var(--color-dark-dark);">{{ $title }}</strong>
+                  <span style="font-size:var(--text-small);color:#555;line-height:1.5;">{{ $desc }}</span>
+                </div>
+              </div>
+            </div>
+            @endforeach
+          </div>
+        @else
+          <h2 style="color:var(--color-primary-bg); border-bottom:2px solid var(--color-primary-bg); padding-bottom:8px; margin-bottom:var(--spacing-medium);">
+            <i class="ph ph-buildings"></i> Facilities &amp; Infrastructure
+          </h2>
+          <p style="margin-bottom:var(--spacing-medium);">Chittagong Port Republic Club offers a comprehensive range of modern facilities for its members and guests. Below are the key amenities available at the club premises:</p>
+          <div class="container-row" style="gap:var(--spacing-medium);">
+            @foreach([
+              ['ph-building','Grand Event Hall','Air-conditioned banquet hall with a capacity of 1,000 guests — ideal for weddings, seminars, corporate events and cultural programmes.'],
+              ['ph-grass','Open Field &amp; Lawn','Approximately 2 acres of open grounds available for outdoor functions, sports tournaments and recreational activities.'],
+              ['ph-fork-knife','Restaurant &amp; Catering','In-house restaurant managed by trained chefs, offering on-site catering packages for all types of events.'],
+              ['ph-monitor-play','Audio-Visual Equipment','Full AV setup including HD projectors, LED screens, professional sound systems and stage lighting.'],
+              ['ph-car','Ample Parking','Secure parking area accommodating approximately 200 vehicles with 24-hour security surveillance.'],
+              ['ph-first-aid','Backup Power','High-capacity generator ensuring uninterrupted electricity supply throughout all events.'],
+              ['ph-wifi','High-Speed Wi-Fi','Wireless internet connectivity across the entire club premises for guests and event organisers.'],
+              ['ph-toilet','Modern Washrooms','Separate, well-maintained washrooms for male and female guests throughout the venue.'],
+              ['ph-baby','Kids Play Corner','Dedicated play area and entertainment corner designed for younger guests.'],
+              ['ph-lock','Security System','24-hour CCTV surveillance and trained security personnel to ensure a safe environment.'],
+            ] as [$icon, $title, $desc])
+            <div class="container-col-6" style="margin-bottom:var(--spacing-medium);">
+              <div style="display:flex;gap:12px;align-items:flex-start;background:#f8f9fa;border-radius:var(--radius-small);padding:16px;">
+                <i class="ph {{ $icon }}" style="font-size:1.8rem;color:var(--color-primary-bg);flex-shrink:0;margin-top:2px;"></i>
+                <div>
+                  <strong style="display:block;margin-bottom:4px;color:var(--color-dark-dark);">{!! $title !!}</strong>
+                  <span style="font-size:var(--text-small);color:#555;line-height:1.5;">{!! $desc !!}</span>
+                </div>
+              </div>
+            </div>
+            @endforeach
+          </div>
+        @endif
+      </section>
+
       <section class="widget block-widget" id="organogram" style="background:#fff; border-radius:var(--radius-medium); padding:var(--spacing-large); box-shadow:var(--shadow-small);">
         @if(app()->getLocale() === 'bn')
           <h2 style="color:var(--color-primary-bg); border-bottom:2px solid var(--color-primary-bg); padding-bottom:8px; margin-bottom:var(--spacing-medium);">

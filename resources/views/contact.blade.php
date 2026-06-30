@@ -224,4 +224,18 @@
   </div>
 
 </div>
+
+{{-- Full-width map --}}
+<div style="width:100%; margin-top:var(--spacing-large);">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d468.6!2d91.8217!3d22.3397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s8Q8V%2BFR5+Mosque+Market+Port+Colony+Rd%2C+Chattogram+4100%2C+Bangladesh!5e0!3m2!1sen!2sbd!4v1"
+    width="100%"
+    height="420"
+    style="border:0; display:block;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    title="{{ app()->getLocale() === 'bn' ? 'চট্টগ্রাম বন্দর রিপাবলিক ক্লাবের অবস্থান' : 'Chittagong Port Republic Club Location' }}">
+  </iframe>
+</div>
 @endsection

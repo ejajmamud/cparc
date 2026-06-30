@@ -155,21 +155,21 @@
                          {{ old('booker_type', 'general') === 'general' ? 'checked' : '' }} 
                          class="pkg-radio-input" style="display:none;">
                   <div class="pkg-radio-name">{{ app()->getLocale() === 'bn' ? 'সাধারণ (বহিরাগত)' : 'General Public (Outsider)' }}</div>
-                  <div class="pkg-radio-price">৳18,000 (Base)</div>
+                  <div class="pkg-radio-price">{{ bn_taka(18000) }} ({{ app()->getLocale() === 'bn' ? 'ভিত্তি' : 'Base' }})</div>
                 </label>
                 <label class="pkg-radio-card @if(old('booker_type') === 'staff') selected @endif" id="lbl_bt_staff">
                   <input type="radio" name="booker_type" value="staff" 
                          {{ old('booker_type') === 'staff' ? 'checked' : '' }} 
                          class="pkg-radio-input" style="display:none;">
                   <div class="pkg-radio-name">{{ app()->getLocale() === 'bn' ? 'চবক কর্মকর্তা-কর্মচারী' : 'CPA Staff' }}</div>
-                  <div class="pkg-radio-price">৳5,000 (Base)</div>
+                  <div class="pkg-radio-price">{{ bn_taka(5000) }} ({{ app()->getLocale() === 'bn' ? 'ভিত্তি' : 'Base' }})</div>
                 </label>
                 <label class="pkg-radio-card @if(old('booker_type') === 'member') selected @endif" id="lbl_bt_member">
                   <input type="radio" name="booker_type" value="member" 
                          {{ old('booker_type') === 'member' ? 'checked' : '' }} 
                          class="pkg-radio-input" style="display:none;">
                   <div class="pkg-radio-name">{{ app()->getLocale() === 'bn' ? 'রিপাবলিক ক্লাব সদস্য' : 'Republic Club Member' }}</div>
-                  <div class="pkg-radio-price">৳3,000 (Base)</div>
+                  <div class="pkg-radio-price">{{ bn_taka(3000) }} ({{ app()->getLocale() === 'bn' ? 'ভিত্তি' : 'Base' }})</div>
                 </label>
               </div>
               @error('booker_type')<span class="bk-error-msg">{{ $message }}</span>@enderror
@@ -218,7 +218,7 @@
                          {{ old('rental_type') === 'hall_field' ? 'checked' : '' }} 
                          class="pkg-radio-input" style="display:none;">
                   <div class="pkg-radio-name" style="font-size: 0.95rem;">{{ app()->getLocale() === 'bn' ? 'হল + মাঠ' : 'Hall + Field' }}</div>
-                  <div style="font-size: 0.72rem; color: #666; margin-top: 4px;">+৳10,000</div>
+                  <div style="font-size: 0.72rem; color: #666; margin-top: 4px;">+{{ bn_taka(10000) }}</div>
                 </label>
               </div>
               @error('rental_type')<span class="bk-error-msg">{{ $message }}</span>@enderror
@@ -373,26 +373,25 @@
           
           <div class="pkg-summary-row">
             <span>{{ app()->getLocale() === 'bn' ? 'বেস হল ভাড়া' : 'Base Hall Rent' }}</span>
-            <strong id="sum-base-rent">৳18,000</strong>
+            <strong id="sum-base-rent">{{ bn_taka(18000) }}</strong>
           </div>
           
           <div class="pkg-summary-row" id="sum-field-row" style="display:none;">
             <span>{{ app()->getLocale() === 'bn' ? 'মাঠ ভাড়া' : 'Field Rent' }}</span>
-            <strong id="sum-field-rent">৳10,000</strong>
+            <strong id="sum-field-rent">{{ bn_taka(10000) }}</strong>
           </div>
           
           <div class="pkg-summary-row" id="sum-electricity-row" style="display:none;">
             <span>{{ app()->getLocale() === 'bn' ? 'বিদ্যুৎ বিল' : 'Electricity Bill' }}</span>
-            <strong id="sum-electricity-rent">৳0</strong>
+            <strong id="sum-electricity-rent">{{ bn_taka(0) }}</strong>
           </div>
           
           <div class="pkg-summary-price" id="sum-total-price" style="margin-top:14px; padding-top:14px; border-top: 1px dashed rgba(0,0,0,0.12); font-size:1.6rem;">
-            ৳18,000
+          {{ bn_taka(18000) }}
           </div>
-          
           <div class="pkg-summary-row pkg-advance-row">
-            <span>{{ __('site.advance_required') }} (50%)</span>
-            <strong class="pkg-advance-amt" id="sum-advance-amt">৳9,000</strong>
+            <span>{{ __('site.advance_required') }} ({{ app()->getLocale() === 'bn' ? '৫০%' : '50%' }})</span>
+            <strong class="pkg-advance-amt" id="sum-advance-amt">{{ bn_taka(9000) }}</strong>
           </div>
         </div>
       </div>
@@ -416,6 +415,13 @@
 @push('scripts')
 <script>
 (function() {
+  const isBn = {{ app()->getLocale() === 'bn' ? 'true' : 'false' }};
+  function toBn(str) {
+    if (!isBn) return String(str);
+    return String(str).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+  }
+  function fmtTaka(amount) { return '৳' + toBn(amount.toLocaleString('en-US')); }
+
   const dateInput       = document.getElementById('event_date');
   const eventTypeEl     = document.getElementById('event_type');
   const otherWrap       = document.getElementById('other_type_wrap');
@@ -497,13 +503,13 @@
     }
 
     sumBookerTitle.textContent = bookerNameText;
-    sumBaseRent.textContent = '৳' + base.toLocaleString();
+    sumBaseRent.textContent = fmtTaka(base);
 
     let fieldRent = 0;
     if (rentalType === 'hall_field') {
       fieldRent = 10000;
       sumFieldRow.style.display = 'flex';
-      sumFieldRent.textContent = '৳10,000';
+      sumFieldRent.textContent = fmtTaka(10000);
     } else {
       sumFieldRow.style.display = 'none';
     }
@@ -512,7 +518,7 @@
     if (shift === 'night') {
       electricityRent = (bookerType === 'general') ? 2000 : 1500;
       sumElectricityRow.style.display = 'flex';
-      sumElectricityRent.textContent = '৳' + electricityRent.toLocaleString();
+      sumElectricityRent.textContent = fmtTaka(electricityRent);
     } else {
       sumElectricityRow.style.display = 'none';
     }
@@ -520,8 +526,8 @@
     const total = base + fieldRent + electricityRent;
     const advance = Math.round(total / 2);
 
-    sumTotalPrice.textContent = '৳' + total.toLocaleString();
-    sumAdvanceAmt.textContent = '৳' + advance.toLocaleString();
+    sumTotalPrice.textContent = fmtTaka(total);
+    sumAdvanceAmt.textContent = fmtTaka(advance);
   }
 
   // Initial calculation
