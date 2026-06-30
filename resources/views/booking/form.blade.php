@@ -259,7 +259,7 @@
             {{-- Event Date --}}
             <div class="bk-field">
               <label for="event_date">
-                {{ __('site.event_date') }} <span class="bn-text">/ তারিখ</span>
+                {{ app()->getLocale() === 'bn' ? 'শুরুর তারিখ' : 'Start Date' }}
                 <span class="bk-required">*</span>
               </label>
               <input type="date" id="event_date" name="event_date"
@@ -267,9 +267,31 @@
                      min="{{ date('Y-m-d', strtotime('+1 day')) }}"
                      class="bk-input @error('event_date') bk-input-error @enderror"
                      required>
-              <div id="availability-status" class="availability-badge" style="display:none;"></div>
               @error('event_date')<span class="bk-error-msg">{{ $message }}</span>@enderror
             </div>
+
+            {{-- Event End Date --}}
+            <div class="bk-field">
+              <label for="event_end_date">
+                {{ app()->getLocale() === 'bn' ? 'শেষের তারিখ (বহুদিনের জন্য)' : 'End Date (for multi-day)' }}
+                <span class="bk-optional">({{ __('site.optional') }})</span>
+              </label>
+              <input type="date" id="event_end_date" name="event_end_date"
+                     value="{{ old('event_end_date') }}"
+                     min="{{ date('Y-m-d', strtotime('+1 day')) }}"
+                     class="bk-input @error('event_end_date') bk-input-error @enderror">
+              @error('event_end_date')<span class="bk-error-msg">{{ $message }}</span>@enderror
+            </div>
+
+            {{-- Days summary badge --}}
+            <div class="bk-field bk-col-span-2" id="days-summary-wrap" style="display:none;">
+              <div id="days-summary" style="background:var(--color-primary-bg);color:#fff;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:.9rem;">
+                <i class="ph ph-calendar-blank"></i>
+                <span id="days-summary-text"></span>
+              </div>
+              <div id="availability-status" class="availability-badge" style="display:none;margin-top:6px;"></div>
+            </div>
+            <div id="availability-status-single" class="availability-badge" style="display:none;"></div>
 
             {{-- Guests --}}
             <div class="bk-field">
@@ -371,8 +393,16 @@
             {{ app()->getLocale() === 'bn' ? 'সাধারণ (বহিরাগত)' : 'General Public (Outsider)' }}
           </div>
           
+                    <div class="pkg-summary-row" id="sum-days-row" style="display:none;">
+            <span>{{ app()->getLocale() === 'bn' ? 'মোট দিন' : 'Total Days' }}</span>
+            <strong id="sum-days">1</strong>
+          </div>
+          <div class="pkg-summary-row" id="sum-discount-row" style="display:none;">
+            <span>{{ app()->getLocale() === 'bn' ? 'বহুদিনের ছাড়' : 'Multi-day Discount' }}</span>
+            <strong id="sum-discount" style="color:#27ae60;"></strong>
+          </div>
           <div class="pkg-summary-row">
-            <span>{{ app()->getLocale() === 'bn' ? 'বেস হল ভাড়া' : 'Base Hall Rent' }}</span>
+            <span>{{ app()->getLocale() === 'bn' ? 'প্রতিদিনের ভাড়া' : 'Per Day Rate' }}</span>
             <strong id="sum-base-rent">{{ bn_taka(18000) }}</strong>
           </div>
           
@@ -420,50 +450,47 @@
     if (!isBn) return String(str);
     return String(str).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
   }
-  function fmtTaka(amount) { return '৳' + toBn(amount.toLocaleString('en-US')); }
+  function fmtTaka(amount) { return '৳' + toBn(Math.round(amount).toLocaleString('en-US')); }
 
-  const dateInput       = document.getElementById('event_date');
-  const eventTypeEl     = document.getElementById('event_type');
-  const otherWrap       = document.getElementById('other_type_wrap');
-  const statusDiv       = document.getElementById('availability-status');
-  
+  const dateInput    = document.getElementById('event_date');
+  const endDateInput = document.getElementById('event_end_date');
+  const eventTypeEl  = document.getElementById('event_type');
+  const otherWrap    = document.getElementById('other_type_wrap');
+  const statusDiv    = document.getElementById('availability-status');
+  const daysSumWrap  = document.getElementById('days-summary-wrap');
+  const daysSumText  = document.getElementById('days-summary-text');
+
   // Pricing elements
-  const sumBookerTitle  = document.getElementById('sum-booker-title');
-  const sumBaseRent     = document.getElementById('sum-base-rent');
-  const sumFieldRow     = document.getElementById('sum-field-row');
-  const sumFieldRent    = document.getElementById('sum-field-rent');
-  const sumElectricityRow = document.getElementById('sum-electricity-row');
+  const sumBookerTitle     = document.getElementById('sum-booker-title');
+  const sumBaseRent        = document.getElementById('sum-base-rent');
+  const sumFieldRow        = document.getElementById('sum-field-row');
+  const sumFieldRent       = document.getElementById('sum-field-rent');
+  const sumElectricityRow  = document.getElementById('sum-electricity-row');
   const sumElectricityRent = document.getElementById('sum-electricity-rent');
-  const sumTotalPrice   = document.getElementById('sum-total-price');
-  const sumAdvanceAmt   = document.getElementById('sum-advance-amt');
+  const sumDaysRow         = document.getElementById('sum-days-row');
+  const sumDays            = document.getElementById('sum-days');
+  const sumDiscountRow     = document.getElementById('sum-discount-row');
+  const sumDiscount        = document.getElementById('sum-discount');
+  const sumTotalPrice      = document.getElementById('sum-total-price');
+  const sumAdvanceAmt      = document.getElementById('sum-advance-amt');
 
-  // Toggle "other" field
   if (eventTypeEl && otherWrap) {
     eventTypeEl.addEventListener('change', function() {
       otherWrap.style.display = this.value === 'other' ? 'block' : 'none';
     });
   }
 
-  // Setup Radio Cards selection styling
   function setupRadioCards(name) {
     const radios = document.querySelectorAll('input[name="' + name + '"]');
     radios.forEach(function(radio) {
       radio.addEventListener('change', function() {
         radios.forEach(r => r.closest('.pkg-radio-card').classList.remove('selected'));
         this.closest('.pkg-radio-card').classList.add('selected');
-        
         calculatePrice();
-        if (name === 'booking_shift') {
-          checkAvailability();
-        }
+        if (name === 'booking_shift') checkAvailability();
       });
-      
-      // label card click
       radio.closest('.pkg-radio-card').addEventListener('click', function(e) {
-        if (e.target !== radio) {
-          radio.checked = true;
-          radio.dispatchEvent(new Event('change'));
-        }
+        if (e.target !== radio) { radio.checked = true; radio.dispatchEvent(new Event('change')); }
       });
     });
   }
@@ -472,92 +499,128 @@
   setupRadioCards('booking_shift');
   setupRadioCards('rental_type');
 
+  function getDays() {
+    if (!dateInput.value) return 1;
+    if (!endDateInput.value || endDateInput.value <= dateInput.value) return 1;
+    const ms = new Date(endDateInput.value) - new Date(dateInput.value);
+    return Math.round(ms / 86400000) + 1;
+  }
+
   function calculatePrice() {
     const bookerRadio = document.querySelector('input[name="booker_type"]:checked');
-    const shiftRadio = document.querySelector('input[name="booking_shift"]:checked');
+    const shiftRadio  = document.querySelector('input[name="booking_shift"]:checked');
     const rentalRadio = document.querySelector('input[name="rental_type"]:checked');
-
     if (!bookerRadio || !shiftRadio || !rentalRadio) return;
 
     const bookerType = bookerRadio.value;
-    const shift = shiftRadio.value;
+    const shift      = shiftRadio.value;
     const rentalType = rentalRadio.value;
+    const days       = getDays();
 
-    // Toggle document upload labels dynamically
-    document.getElementById('upload_label_general').style.display = (bookerType === 'general') ? 'inline' : 'none';
-    document.getElementById('upload_label_staff').style.display = (bookerType === 'staff') ? 'inline' : 'none';
-    document.getElementById('upload_label_member').style.display = (bookerType === 'member') ? 'inline' : 'none';
+    document.getElementById('upload_label_general').style.display = bookerType === 'general' ? 'inline' : 'none';
+    document.getElementById('upload_label_staff').style.display   = bookerType === 'staff'   ? 'inline' : 'none';
+    document.getElementById('upload_label_member').style.display  = bookerType === 'member'  ? 'inline' : 'none';
 
-    let base = 18000;
-    let bookerNameText = '';
-
-    if (bookerType === 'general') {
-      base = 18000;
-      bookerNameText = '{{ app()->getLocale() === 'bn' ? "সাধারণ (বহিরাগত)" : "General Public (Outsider)" }}';
-    } else if (bookerType === 'staff') {
-      base = 5000;
-      bookerNameText = '{{ app()->getLocale() === 'bn' ? "চবক কর্মকর্তা-কর্মচারী" : "CPA Staff" }}';
-    } else if (bookerType === 'member') {
-      base = 3000;
-      bookerNameText = '{{ app()->getLocale() === 'bn' ? "রিপাবলিক ক্লাব সদস্য" : "Republic Club Member" }}';
-    }
-
-    sumBookerTitle.textContent = bookerNameText;
-    sumBaseRent.textContent = fmtTaka(base);
+    let perDay = { general:18000, staff:5000, member:3000 }[bookerType] || 18000;
+    const names = {
+      general: isBn ? 'সাধারণ (বহিরাগত)' : 'General Public (Outsider)',
+      staff:   isBn ? 'চবক কর্মকর্তা-কর্মচারী' : 'CPA Staff',
+      member:  isBn ? 'রিপাবলিক ক্লাব সদস্য' : 'Republic Club Member',
+    };
+    sumBookerTitle.textContent = names[bookerType];
 
     let fieldRent = 0;
     if (rentalType === 'hall_field') {
       fieldRent = 10000;
       sumFieldRow.style.display = 'flex';
       sumFieldRent.textContent = fmtTaka(10000);
-    } else {
-      sumFieldRow.style.display = 'none';
-    }
+    } else { sumFieldRow.style.display = 'none'; }
 
-    let electricityRent = 0;
+    let elecRent = 0;
     if (shift === 'night') {
-      electricityRent = (bookerType === 'general') ? 2000 : 1500;
+      elecRent = bookerType === 'general' ? 2000 : 1500;
       sumElectricityRow.style.display = 'flex';
-      sumElectricityRent.textContent = fmtTaka(electricityRent);
-    } else {
-      sumElectricityRow.style.display = 'none';
-    }
+      sumElectricityRent.textContent = fmtTaka(elecRent);
+    } else { sumElectricityRow.style.display = 'none'; }
 
-    const total = base + fieldRent + electricityRent;
+    const perDayTotal = perDay + fieldRent + elecRent;
+    sumBaseRent.textContent = fmtTaka(perDayTotal);
+
+    // Multi-day: 10% off per extra day, max 30%
+    const discountRate = Math.min((days - 1) * 0.10, 0.30);
+    const total  = Math.round(perDayTotal * days * (1 - discountRate));
     const advance = Math.round(total / 2);
+
+    if (days > 1) {
+      sumDaysRow.style.display    = 'flex';
+      sumDays.textContent         = toBn(days) + (isBn ? ' দিন' : ' day' + (days > 1 ? 's' : ''));
+      if (discountRate > 0) {
+        sumDiscountRow.style.display = 'flex';
+        sumDiscount.textContent = '-' + toBn(Math.round(discountRate * 100)) + '%';
+      }
+    } else {
+      sumDaysRow.style.display    = 'none';
+      sumDiscountRow.style.display = 'none';
+    }
 
     sumTotalPrice.textContent = fmtTaka(total);
     sumAdvanceAmt.textContent = fmtTaka(advance);
   }
 
-  // Initial calculation
   calculatePrice();
 
-  // Availability check
-  let availTimer = null;
+  // Sync end date min to start date
   dateInput.addEventListener('change', function() {
-    clearTimeout(availTimer);
-    availTimer = setTimeout(checkAvailability, 300);
+    endDateInput.min = this.value;
+    if (endDateInput.value && endDateInput.value < this.value) endDateInput.value = '';
+    updateDaysBadge();
+    calculatePrice();
+    checkAvailability();
   });
 
+  endDateInput.addEventListener('change', function() {
+    updateDaysBadge();
+    calculatePrice();
+    checkAvailability();
+  });
+
+  function updateDaysBadge() {
+    const days = getDays();
+    if (days > 1 && dateInput.value && endDateInput.value) {
+      daysSumWrap.style.display = 'block';
+      daysSumText.textContent = isBn
+        ? toBn(dateInput.value) + ' থেকে ' + toBn(endDateInput.value) + ' — মোট ' + toBn(days) + ' দিন'
+        : dateInput.value + ' to ' + endDateInput.value + ' — ' + days + ' days total';
+    } else {
+      daysSumWrap.style.display = 'none';
+    }
+  }
+
+  let availTimer = null;
   function checkAvailability() {
-    const date  = dateInput.value;
+    const date    = dateInput.value;
+    const endDate = endDateInput.value;
     const shiftRadio = document.querySelector('input[name="booking_shift"]:checked');
     if (!date || !shiftRadio) return;
 
-    statusDiv.className = 'availability-badge checking';
-    statusDiv.textContent = '{{ __("site.checking_availability") }}';
-    statusDiv.style.display = 'block';
+    const sd = statusDiv;
+    sd.className = 'availability-badge checking';
+    sd.textContent = '{{ __("site.checking_availability") }}';
+    sd.style.display = 'block';
+    if (daysSumWrap.style.display !== 'none') {
+      // show inside the badge wrap
+    }
 
-    fetch('{{ route("booking.availability") }}?date=' + encodeURIComponent(date) + '&shift=' + shiftRadio.value)
-      .then(r => r.json())
-      .then(data => {
-        statusDiv.className = 'availability-badge ' + (data.available ? 'available' : 'unavailable');
-        statusDiv.textContent = (data.available ? '✓ ' : '✗ ') + data.message;
-      })
-      .catch(() => {
-        statusDiv.style.display = 'none';
-      });
+    clearTimeout(availTimer);
+    availTimer = setTimeout(() => {
+      let url = '{{ route("booking.availability") }}?date=' + encodeURIComponent(date) + '&shift=' + shiftRadio.value;
+      if (endDate && endDate > date) url += '&end_date=' + encodeURIComponent(endDate);
+
+      fetch(url).then(r => r.json()).then(data => {
+        sd.className = 'availability-badge ' + (data.available ? 'available' : 'unavailable');
+        sd.textContent = (data.available ? '✓ ' : '✗ ') + data.message;
+      }).catch(() => { sd.style.display = 'none'; });
+    }, 400);
   }
 })();
 </script>

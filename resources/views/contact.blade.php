@@ -226,15 +226,35 @@
 </div>
 
 {{-- Full-width map --}}
-<div style="width:100%; margin-top:var(--spacing-large);">
+<div style="position:relative; width:100%; margin-top:var(--spacing-large); overflow:hidden; box-shadow:0 -4px 24px rgba(0,0,0,.12);">
+
+  {{-- Decorative header bar --}}
+  <div style="background:var(--color-primary-bg); padding:14px 24px; display:flex; align-items:center; gap:12px;">
+    <i class="ph ph-map-pin-line" style="font-size:1.4rem; color:#fff;"></i>
+    <div>
+      <p style="margin:0; color:#fff; font-weight:600; font-size:1rem;">
+        {{ app()->getLocale() === 'bn' ? 'চট্টগ্রাম বন্দর রিপাবলিক ক্লাব' : 'Chittagong Port Republic Club' }}
+      </p>
+      <p style="margin:0; color:rgba(255,255,255,.75); font-size:.8rem;">
+        {{ app()->getLocale() === 'bn' ? 'মসজিদ মার্কেট, পোর্ট কলোনি রোড, চট্টগ্রাম ৪১০০' : 'Mosque Market, Port Colony Rd, Chattogram 4100' }}
+      </p>
+    </div>
+    <a href="https://maps.google.com/?q=Port+Republic+Club+Chattogram" target="_blank" rel="noopener"
+       style="margin-left:auto; background:rgba(255,255,255,.15); color:#fff; text-decoration:none; padding:6px 14px; border-radius:20px; font-size:.8rem; display:flex; align-items:center; gap:6px; transition:background .2s;"
+       onmouseover="this.style.background='rgba(255,255,255,.25)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">
+      <i class="ph ph-arrow-square-out"></i>
+      {{ app()->getLocale() === 'bn' ? 'গুগল ম্যাপে খুলুন' : 'Open in Google Maps' }}
+    </a>
+  </div>
+
   <iframe
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d468.6!2d91.8217!3d22.3397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s8Q8V%2BFR5+Mosque+Market+Port+Colony+Rd%2C+Chattogram+4100%2C+Bangladesh!5e0!3m2!1sen!2sbd!4v1"
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3691.02788919091!2d91.79102647506978!3d22.31478497967615!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acdf282d0ee5e7%3A0x95498a9ff50c60e1!2sPort%20Republic%20Club!5e0!3m2!1sen!2smy!4v1782852063959!5m2!1sen!2smy"
     width="100%"
-    height="420"
+    height="460"
     style="border:0; display:block;"
     allowfullscreen=""
     loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade"
+    referrerpolicy="strict-origin-when-cross-origin"
     title="{{ app()->getLocale() === 'bn' ? 'চট্টগ্রাম বন্দর রিপাবলিক ক্লাবের অবস্থান' : 'Chittagong Port Republic Club Location' }}">
   </iframe>
 </div>

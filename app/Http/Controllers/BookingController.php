@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Package;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
@@ -20,20 +21,19 @@ class BookingController extends Controller
     public function checkAvailability(Request $request): JsonResponse
     {
         $request->validate([
-            'date'  => 'required|date|after_or_equal:today',
-            'shift' => 'required|in:day,night',
+            'date'     => 'required|date|after_or_equal:today',
+            'end_date' => 'nullable|date|after_or_equal:date',
+            'shift'    => 'required|in:day,night',
         ]);
 
-        $available = Booking::isDateAvailable($request->date, $request->shift);
-        $bookedCount = Booking::where('event_date', $request->date)
-            ->where('booking_shift', $request->shift)
-            ->whereIn('status', ['pending', 'confirmed'])
-            ->count();
+        $start = $request->date;
+        $end   = $request->end_date ?: $start;
+
+        $available = Booking::isRangeAvailable($start, $end, $request->shift);
 
         return response()->json([
-            'available'   => $available,
-            'booked_slots'=> $bookedCount,
-            'message'     => $available
+            'available' => $available,
+            'message'   => $available
                 ? __('site.date_available')
                 : __('site.date_unavailable'),
         ]);
@@ -55,34 +55,41 @@ class BookingController extends Controller
             'event_type'            => 'required|string',
             'event_type_other'      => 'nullable|string|max:100',
             'event_date'            => 'required|date|after_or_equal:today',
+            'event_end_date'        => 'nullable|date|after_or_equal:event_date',
             'start_time'            => 'nullable|date_format:H:i',
             'end_time'              => 'nullable|date_format:H:i',
             'guests_count'          => 'nullable|integer|min:1|max:5000',
             'special_requests'      => 'nullable|string|max:1000',
         ]);
 
-        if (!Booking::isDateAvailable($validated['event_date'], $validated['booking_shift'])) {
+        $startDate = $validated['event_date'];
+        $endDate   = $validated['event_end_date'] ?? $startDate;
+        $days      = Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate)) + 1;
+
+        if (!Booking::isRangeAvailable($startDate, $endDate, $validated['booking_shift'])) {
             return back()->withInput()->withErrors([
                 'event_date' => __('site.date_unavailable'),
             ]);
         }
 
-        // Store verification file
         $documentPath = null;
         if ($request->hasFile('verification_document')) {
-            $documentPath = $request->file('verification_document')->store('bookings/documents', 'public');
+            $documentPath = $request->file('verification_document')
+                ->store('bookings/documents', 'public');
         }
 
-        // Calculate dynamic total price
         $totalAmount = Booking::calculatePrice(
             $validated['booker_type'],
             $validated['booking_shift'],
-            $validated['rental_type']
+            $validated['rental_type'],
+            $days
         );
 
         $booking = Booking::create(array_merge($validated, [
             'reference_number'      => Booking::generateReference(),
             'verification_document' => $documentPath,
+            'event_end_date'        => $days > 1 ? $endDate : null,
+            'event_days'            => $days,
             'total_amount'          => $totalAmount,
             'advance_paid'          => 0,
             'status'                => 'pending',

@@ -13,15 +13,16 @@ class Booking extends Model
     protected $fillable = [
         'reference_number','booker_name','booker_phone','booker_email',
         'booker_address','booker_nid','verification_document','package_id','booking_shift','rental_type','booker_type',
-        'event_type','event_type_other','event_date','start_time','end_time','guests_count',
+        'event_type','event_type_other','event_date','event_end_date','event_days','start_time','end_time','guests_count',
         'special_requests','status','admin_notes','confirmed_at','cancelled_at',
         'total_amount','advance_paid','payment_method','transaction_id',
     ];
 
     protected $casts = [
-        'event_date'   => 'date',
-        'confirmed_at' => 'datetime',
-        'cancelled_at' => 'datetime',
+        'event_date'     => 'date',
+        'event_end_date' => 'date',
+        'confirmed_at'   => 'datetime',
+        'cancelled_at'   => 'datetime',
     ];
 
     public function package(): BelongsTo
@@ -57,39 +58,63 @@ class Booking extends Model
      * - shift: day, night
      * - rentalType: hall, hall_field
      */
-    public static function calculatePrice(string $bookerType, string $shift, string $rentalType): int
-    {
-        // 1. Base Hall Price (Day Shift)
+    public static function calculatePrice(
+        string $bookerType,
+        string $shift,
+        string $rentalType,
+        int $days = 1
+    ): int {
         $prices = [
             'general' => 18000,
             'staff'   => 5000,
             'member'  => 3000,
         ];
-        
-        $base = $prices[$bookerType] ?? 18000;
-        
-        // 2. Field Surcharge (+10,000 for all)
+
+        $perDay = $prices[$bookerType] ?? 18000;
+
         if ($rentalType === 'hall_field') {
-            $base += 10000;
+            $perDay += 10000;
         }
-        
-        // 3. Night Shift Electricity Surcharge
+
         if ($shift === 'night') {
-            if ($bookerType === 'general') {
-                $base += 2000;
-            } else {
-                $base += 1500;
-            }
+            $perDay += ($bookerType === 'general') ? 2000 : 1500;
         }
-        
-        return $base;
+
+        // Multi-day discount: 10% off per extra day (capped at 30%)
+        $discount = min(($days - 1) * 0.10, 0.30);
+
+        return (int) round($perDay * $days * (1 - $discount));
     }
 
     public static function isDateAvailable(string $date, string $shift, ?int $excludeId = null): bool
     {
-        $query = static::where('event_date', $date)
-            ->where('booking_shift', $shift)
-            ->whereIn('status', ['pending', 'confirmed']);
+        $query = static::where('booking_shift', $shift)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->where(function ($q) use ($date) {
+                // Conflicts if existing booking's date range overlaps with this date
+                $q->where('event_date', '<=', $date)
+                  ->where(function ($q2) use ($date) {
+                      $q2->whereNull('event_end_date')
+                         ->orWhere('event_end_date', '>=', $date);
+                  });
+            });
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+        return $query->count() === 0;
+    }
+
+    public static function isRangeAvailable(string $startDate, string $endDate, string $shift, ?int $excludeId = null): bool
+    {
+        $query = static::where('booking_shift', $shift)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->where('event_date', '<=', $endDate)
+                  ->where(function ($q2) use ($startDate) {
+                      $q2->whereNull('event_end_date')
+                         ->orWhere('event_end_date', '>=', $startDate);
+                  });
+            });
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);
         }
