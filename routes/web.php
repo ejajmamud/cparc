@@ -51,4 +51,54 @@ Route::get('/book-hall/confirm/{ref}', [BookingController::class, 'confirm'])->n
 // Newsletter
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
 
+Route::get('/storage-debug', function() {
+    $link = public_path('storage');
+    $target = storage_path('app/public');
+    
+    $out = [];
+    $out['link_path'] = $link;
+    $out['target_path'] = $target;
+    $out['link_exists'] = file_exists($link) ? 'YES' : 'NO';
+    $out['link_is_link'] = is_link($link) ? 'YES' : 'NO';
+    $out['link_is_dir'] = is_dir($link) ? 'YES' : 'NO';
+    if (is_link($link)) {
+        $out['link_target'] = readlink($link);
+    }
+    
+    // Check if target directory exists and is writeable
+    $out['target_exists'] = file_exists($target) ? 'YES' : 'NO';
+    $out['target_is_dir'] = is_dir($target) ? 'YES' : 'NO';
+    $out['target_writeable'] = is_writable($target) ? 'YES' : 'NO';
+    $out['link_parent_writeable'] = is_writable(dirname($link)) ? 'YES' : 'NO';
+    
+    // Check if member directory exists and lists files
+    $memberDir = $target . '/members';
+    if (file_exists($memberDir)) {
+        $files = scandir($memberDir);
+        $out['member_files'] = array_slice($files, 0, 10);
+    } else {
+        $out['member_files_error'] = "members dir does not exist";
+    }
+    
+    // Force link deletion and regeneration
+    try {
+        if (is_link($link) || file_exists($link) || is_dir($link)) {
+            $out['delete_action'] = unlink($link) ? 'SUCCESS' : 'FAILED';
+        }
+        
+        $artisanRes = \Illuminate\Support\Facades\Artisan::call('storage:link');
+        $out['artisan_output'] = \Illuminate\Support\Facades\Artisan::output();
+    } catch (\Exception $e) {
+        $out['error'] = $e->getMessage();
+    }
+    
+    $out['new_link_exists'] = file_exists($link) ? 'YES' : 'NO';
+    $out['new_link_is_link'] = is_link($link) ? 'YES' : 'NO';
+    if (is_link($link)) {
+        $out['new_link_target'] = readlink($link);
+    }
+    
+    return response()->json($out);
+});
+
 
