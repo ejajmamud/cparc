@@ -1,0 +1,2 @@
+[start]
+cmd = "node /assets/scripts/prestart.mjs /assets/nginx.template.conf /nginx.conf && sed -i 's/sendfile     on;/client_max_body_size 256M;\\n    sendfile     on;/' /nginx.conf && printf '\\nphp_admin_value[upload_max_filesize] = 128M\\nphp_admin_value[post_max_size] = 256M\\nphp_admin_value[memory_limit] = 256M\\nphp_admin_value[max_execution_time] = 300\\n' >> /assets/php-fpm.conf && (php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf)"
