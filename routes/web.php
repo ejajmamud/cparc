@@ -111,6 +111,24 @@ Route::get('/extract-storage', function() {
         $zip->extractTo($extractPath);
         $zip->close();
         
+        // Convert Windows backslashes in filenames to Linux directory structures
+        if (file_exists($extractPath) && is_dir($extractPath)) {
+            $files = scandir($extractPath);
+            foreach ($files as $file) {
+                if (str_contains($file, '\\')) {
+                    $newPath = str_replace('\\', '/', $file);
+                    $fullNewPath = $extractPath . '/' . $newPath;
+                    $fullOldPath = $extractPath . '/' . $file;
+                    
+                    $dir = dirname($fullNewPath);
+                    if (!file_exists($dir)) {
+                        @mkdir($dir, 0777, true);
+                    }
+                    @rename($fullOldPath, $fullNewPath);
+                }
+            }
+        }
+        
         // Change permissions to allow writes
         try {
             $iterator = new RecursiveIteratorIterator(
