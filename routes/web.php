@@ -89,4 +89,43 @@ Route::get('/storage-debug', function() {
     return response()->json($out);
 });
 
+Route::get('/extract-storage', function() {
+    $zipPath = base_path('storage.zip');
+    $extractPath = storage_path('app/public');
+    
+    if (!file_exists($zipPath)) {
+        return response()->json(['error' => 'storage.zip not found in base path: ' . $zipPath]);
+    }
+    
+    if (!class_exists('ZipArchive')) {
+        return response()->json(['error' => 'ZipArchive extension not installed']);
+    }
+    
+    $zip = new ZipArchive;
+    $res = $zip->open($zipPath);
+    if ($res === TRUE) {
+        if (!file_exists($extractPath)) {
+            mkdir($extractPath, 0777, true);
+        }
+        
+        $zip->extractTo($extractPath);
+        $zip->close();
+        
+        // Change permissions to allow writes
+        try {
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($extractPath, RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::SELF_FIRST
+            );
+            foreach ($iterator as $item) {
+                @chmod($item, 0777);
+            }
+        } catch (\Exception $e) {}
+        
+        return response()->json(['status' => 'SUCCESS', 'message' => 'Extracted to ' . $extractPath]);
+    } else {
+        return response()->json(['error' => 'Failed to open zip file, code: ' . $res]);
+    }
+});
+
 
