@@ -60,43 +60,31 @@ Route::get('/storage-debug', function() {
     $out['target_path'] = $target;
     $out['link_exists'] = file_exists($link) ? 'YES' : 'NO';
     $out['link_is_link'] = is_link($link) ? 'YES' : 'NO';
-    $out['link_is_dir'] = is_dir($link) ? 'YES' : 'NO';
     if (is_link($link)) {
         $out['link_target'] = readlink($link);
     }
     
-    // Check if target directory exists and is writeable
-    $out['target_exists'] = file_exists($target) ? 'YES' : 'NO';
-    $out['target_is_dir'] = is_dir($target) ? 'YES' : 'NO';
-    $out['target_writeable'] = is_writable($target) ? 'YES' : 'NO';
-    $out['link_parent_writeable'] = is_writable(dirname($link)) ? 'YES' : 'NO';
-    
-    // Check if member directory exists and lists files
-    $memberDir = $target . '/members';
-    if (file_exists($memberDir)) {
-        $files = scandir($memberDir);
-        $out['member_files'] = array_slice($files, 0, 10);
-    } else {
-        $out['member_files_error'] = "members dir does not exist";
-    }
-    
-    // Force link deletion and regeneration
-    try {
-        if (is_link($link) || file_exists($link) || is_dir($link)) {
-            $out['delete_action'] = unlink($link) ? 'SUCCESS' : 'FAILED';
-        }
+    // Recursive folder list under /app/storage
+    $listDirectory = function($dir, $depth = 0) use (&$listDirectory) {
+        if ($depth > 3) return [];
+        if (!file_exists($dir) || !is_dir($dir)) return [];
         
-        $artisanRes = \Illuminate\Support\Facades\Artisan::call('storage:link');
-        $out['artisan_output'] = \Illuminate\Support\Facades\Artisan::output();
-    } catch (\Exception $e) {
-        $out['error'] = $e->getMessage();
-    }
+        $files = scandir($dir);
+        $res = [];
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') continue;
+            $path = $dir . '/' . $file;
+            if (is_dir($path)) {
+                $res[$file] = $listDirectory($path, $depth + 1);
+            } else {
+                $res[] = $file . ' (' . filesize($path) . ' bytes)';
+            }
+        }
+        return $res;
+    };
     
-    $out['new_link_exists'] = file_exists($link) ? 'YES' : 'NO';
-    $out['new_link_is_link'] = is_link($link) ? 'YES' : 'NO';
-    if (is_link($link)) {
-        $out['new_link_target'] = readlink($link);
-    }
+    $out['app_storage_contents'] = $listDirectory(storage_path());
+    $out['public_dir_contents'] = scandir(public_path());
     
     return response()->json($out);
 });
