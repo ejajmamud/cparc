@@ -157,4 +157,39 @@ Route::get('/test-image', function() {
     ]);
 });
 
+Route::get('/fix-paths', function() {
+    $dir = storage_path('app/public');
+    $log = [];
+    if (file_exists($dir) && is_dir($dir)) {
+        $files = scandir($dir);
+        $log['total_files_scanned'] = count($files);
+        $renamed = 0;
+        foreach ($files as $file) {
+            if (str_contains($file, '\\')) {
+                $newPath = str_replace('\\', '/', $file);
+                $fullNewPath = $dir . '/' . $newPath;
+                $fullOldPath = $dir . '/' . $file;
+                
+                $parent = dirname($fullNewPath);
+                if (!file_exists($parent)) {
+                    if (!@mkdir($parent, 0777, true)) {
+                        $log['errors'][] = "Failed to create directory: " . $parent;
+                        continue;
+                    }
+                }
+                if (@rename($fullOldPath, $fullNewPath)) {
+                    @chmod($fullNewPath, 0777);
+                    $renamed++;
+                } else {
+                    $log['errors'][] = "Failed to rename: " . $file;
+                }
+            }
+        }
+        $log['renamed_count'] = $renamed;
+    } else {
+        $log['error'] = "Directory does not exist: " . $dir;
+    }
+    return response()->json($log);
+});
+
 
