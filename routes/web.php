@@ -86,6 +86,15 @@ Route::get('/storage-debug', function() {
     $out['app_storage_contents'] = $listDirectory(storage_path());
     $out['public_dir_contents'] = scandir(public_path());
     
+    // Read last 50 lines of laravel.log
+    $logFile = storage_path('logs/laravel.log');
+    if (file_exists($logFile)) {
+        $lines = file($logFile);
+        $out['laravel_log'] = array_slice($lines, -50);
+    } else {
+        $out['laravel_log'] = "no log file found";
+    }
+    
     return response()->json($out);
 });
 
