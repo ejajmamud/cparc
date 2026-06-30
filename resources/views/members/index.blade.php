@@ -4,9 +4,10 @@
 
 @push('styles')
 <style>
-  /* Members page: remove grey body wash so site background shows through */
+  /* Members page: remove grey body wash + widget white box so site background shows through */
   body { background-color: transparent !important; }
   main { background: transparent !important; }
+  .person-card-stack-widget { background: transparent !important; }
 </style>
 @endpush
 
