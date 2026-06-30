@@ -269,4 +269,30 @@ Route::get('/test-write', function() {
     return response()->json($log);
 });
 
+Route::post('/upload-file', function(\Illuminate\Http\Request $request) {
+    if ($request->input('token') !== 'cparc_upload_token_987654') {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+    
+    $file = $request->file('file');
+    $path = $request->input('path');
+    
+    if (!$file || !$path) {
+        return response()->json(['error' => 'Missing file or path'], 400);
+    }
+    
+    $dest = storage_path('app/public/' . $path);
+    $dir = dirname($dest);
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    
+    if ($file->move($dir, basename($dest))) {
+        @chmod($dest, 0777);
+        return response()->json(['status' => 'SUCCESS', 'saved_to' => $dest]);
+    }
+    
+    return response()->json(['error' => 'Failed to save file'], 500);
+});
+
 
