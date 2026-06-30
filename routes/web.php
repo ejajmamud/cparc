@@ -234,4 +234,15 @@ Route::get('/log-debug', function() {
     return "No log file";
 });
 
+Route::get('/test-zip', function() {
+    $zipPath = base_path('storage.zip');
+    return response()->json([
+        'zip_path' => $zipPath,
+        'zip_exists' => file_exists($zipPath) ? 'YES' : 'NO',
+        'zip_size' => file_exists($zipPath) ? filesize($zipPath) : 0,
+        'zip_readable' => is_readable($zipPath) ? 'YES' : 'NO',
+        'shell_unzip_version' => shell_exec('unzip -v 2>&1'),
+    ]);
+});
+
 
