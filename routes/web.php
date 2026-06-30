@@ -128,4 +128,15 @@ Route::get('/extract-storage', function() {
     }
 });
 
+Route::get('/test-image', function() {
+    $path = public_path('storage/members/01KW98AJ0TM4SQB5Q8B7M8ZQJ3.png');
+    return response()->json([
+        'path' => $path,
+        'exists' => file_exists($path) ? 'YES' : 'NO',
+        'is_readable' => is_readable($path) ? 'YES' : 'NO',
+        'direct_exists' => file_exists(storage_path('app/public/members/01KW98AJ0TM4SQB5Q8B7M8ZQJ3.png')) ? 'YES' : 'NO',
+        'direct_path' => storage_path('app/public/members/01KW98AJ0TM4SQB5Q8B7M8ZQJ3.png'),
+    ]);
+});
+
 
