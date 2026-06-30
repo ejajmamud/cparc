@@ -19,13 +19,13 @@
           <div class="container-col-3" style="margin-bottom:var(--spacing-large); display:flex; flex-direction:column;">
             <div class="person-card-widget"
                  style="background:#fff; border-radius:var(--radius-medium); overflow:hidden; box-shadow:var(--shadow-small); text-align:center; padding-bottom:var(--spacing-medium); display:flex; flex-direction:column; height:100%;">
-              <div class="person-card-image-wrapper" style="background:var(--color-normal-light); height:180px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+              <div class="person-card-image-wrapper" style="background:transparent; height:200px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden;">
                 <img class="person-card-image member-photo"
                      {{-- Eager load first 3, lazy load the rest --}}
                      src="{{ $i < 3 ? $imgSrc : asset('images/club/logo.jpeg') }}"
                      data-src="{{ $imgSrc }}"
                      alt="{{ app()->getLocale() === 'bn' && $member->name_bn ? $member->name_bn : $member->name }}"
-                     style="width:100%; height:180px; object-fit:cover; object-position:center center; background:var(--color-normal-light); filter: {{ $i < 3 ? 'none' : 'blur(4px)' }}; transition: filter 0.3s ease;"
+                     style="width:auto; max-width:100%; height:200px; object-fit:contain; object-position:center bottom; filter: {{ $i < 3 ? 'none' : 'blur(4px)' }}; transition: filter 0.3s ease;"
                      loading="{{ $i < 3 ? 'eager' : 'lazy' }}"
                      decoding="async"
                      onerror="this.src='{{ asset('images/club/logo.jpeg') }}'; this.style.filter='none';">
