@@ -221,4 +221,17 @@ Route::get('/fix-paths', function() {
     return response()->json($log);
 });
 
+Route::get('/log-debug', function() {
+    $logFile = storage_path('logs/laravel.log');
+    if (file_exists($logFile)) {
+        $content = file_get_contents($logFile);
+        $pos = strrpos($content, 'local.ERROR:');
+        if ($pos !== false) {
+            return response(substr($content, $pos, 2000))->header('Content-Type', 'text/plain');
+        }
+        return "local.ERROR not found in logs. Total size: " . strlen($content);
+    }
+    return "No log file";
+});
+
 
