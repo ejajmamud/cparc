@@ -2,98 +2,6 @@
 
 @section('title', app()->getLocale() === 'bn' ? 'কার্যনির্বাহী কমিটি | চট্টগ্রাম বন্দর রিপাবলিক ক্লাব' : 'Executive Committee | Chittagong Port Republic Club')
 
-@push('styles')
-<style>
-  .member-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 0;
-  }
-  .member-card {
-    background: #fff;
-    border-radius: var(--radius-medium);
-    overflow: hidden;
-    box-shadow: var(--shadow-small);
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .member-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-medium);
-  }
-  .member-img-wrap {
-    background: var(--color-normal-light);
-    height: 180px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .member-img-wrap img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    object-position: top center;
-    display: block;
-    /* Placeholder blur until loaded */
-    filter: blur(6px);
-    transition: filter 0.4s ease;
-  }
-  .member-img-wrap img.loaded {
-    filter: none;
-  }
-  
-  @media (max-width: 600px) {
-    .member-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    .member-img-wrap {
-      height: auto;
-      aspect-ratio: 1 / 1;
-    }
-    .member-img-wrap img {
-      height: 100%;
-    }
-    .member-name {
-      font-size: 0.85rem;
-    }
-    .member-designation {
-      font-size: 0.75rem;
-    }
-    .member-contact {
-      font-size: 0.7rem;
-    }
-  }
-  .member-info {
-    padding: 12px 14px;
-  }
-  .member-name {
-    font-weight: 700;
-    font-size: 0.95rem;
-    margin: 0 0 4px;
-    color: var(--color-dark-bg);
-    line-height: 1.3;
-  }
-  .member-designation {
-    color: var(--color-primary-bg);
-    font-size: 0.8rem;
-    margin: 0 0 6px;
-    line-height: 1.3;
-  }
-  .member-contact {
-    font-size: 0.75rem;
-    color: #666;
-    margin: 2px 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-  }
-</style>
-@endpush
-
 @section('content')
 <div style="max-width:var(--container-large); margin:0 auto; padding:var(--spacing-large) var(--spacing-medium);">
 
@@ -102,43 +10,49 @@
   </h1>
 
   @if($members->count())
-    <div class="member-grid">
-      @foreach($members as $i => $member)
-        @php
-          $imgSrc = $member->photo
-            ? asset('storage/' . $member->photo)
-            : asset('images/club/logo.jpeg');
-          $memberName = app()->getLocale() === 'bn' && $member->name_bn ? $member->name_bn : $member->name;
-          $memberDesig = app()->getLocale() === 'bn' && $member->designation_bn ? $member->designation_bn : $member->designation;
-        @endphp
-        <div class="member-card">
-          <div class="member-img-wrap">
-            <img
-              {{-- First 3 load eagerly; rest lazy --}}
-              src="{{ $i < 3 ? $imgSrc : asset('images/club/logo.jpeg') }}"
-              data-src="{{ $imgSrc }}"
-              alt="{{ $memberName }}"
-              width="200"
-              height="180"
-              loading="{{ $i < 3 ? 'eager' : 'lazy' }}"
-              decoding="async"
-              class="member-photo{{ $i < 3 ? ' loaded' : '' }}"
-              onerror="this.src='{{ asset('images/club/logo.jpeg') }}'; this.classList.add('loaded')"
-            >
+    <section class="widget person-card-stack-widget">
+      <div class="person-card-stack-list container-row">
+        @foreach($members as $i => $member)
+          @php
+            $imgSrc = $member->photo ? asset('storage/' . $member->photo) : asset('images/club/logo.jpeg');
+          @endphp
+          <div class="container-col-3" style="margin-bottom:var(--spacing-large);">
+            <div class="person-card-widget"
+                 style="background:#fff; border-radius:var(--radius-medium); overflow:hidden; box-shadow:var(--shadow-small); text-align:center; padding-bottom:var(--spacing-medium);">
+              <div class="person-card-image-wrapper" style="background:var(--color-normal-light); height:180px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <img class="person-card-image member-photo"
+                     {{-- Eager load first 3, lazy load the rest --}}
+                     src="{{ $i < 3 ? $imgSrc : asset('images/club/logo.jpeg') }}"
+                     data-src="{{ $imgSrc }}"
+                     alt="{{ app()->getLocale() === 'bn' && $member->name_bn ? $member->name_bn : $member->name }}"
+                     style="width:100%; height:180px; object-fit:cover; object-position:center center; background:var(--color-normal-light); filter: {{ $i < 3 ? 'none' : 'blur(4px)' }}; transition: filter 0.3s ease;"
+                     loading="{{ $i < 3 ? 'eager' : 'lazy' }}"
+                     decoding="async"
+                     onerror="this.src='{{ asset('images/club/logo.jpeg') }}'; this.style.filter='none';">
+              </div>
+              <div class="person-card-info" style="padding:var(--spacing-medium);">
+                <p class="person-card-name" style="font-weight:600; font-size:var(--text-large); margin:0 0 4px;">
+                  {{ app()->getLocale() === 'bn' && $member->name_bn ? $member->name_bn : $member->name }}
+                </p>
+                <p class="person-card-designation" style="color:var(--color-primary-bg); font-size:var(--text-medium); margin:0 0 8px;">
+                  {{ app()->getLocale() === 'bn' && $member->designation_bn ? $member->designation_bn : $member->designation }}
+                </p>
+                @if($member->phone)
+                  <p style="font-size:var(--text-small); color:#555; margin:0;">
+                    <i class="ph ph-phone"></i> {{ $member->phone }}
+                  </p>
+                @endif
+                @if($member->email)
+                  <p style="font-size:var(--text-small); color:#555; margin:4px 0 0;">
+                    <i class="ph ph-envelope"></i> {{ $member->email }}
+                  </p>
+                @endif
+              </div>
+            </div>
           </div>
-          <div class="member-info">
-            <p class="member-name">{{ $memberName }}</p>
-            <p class="member-designation">{{ $memberDesig }}</p>
-            @if($member->phone)
-              <p class="member-contact"><i class="ph ph-phone"></i> {{ $member->phone }}</p>
-            @endif
-            @if($member->email)
-              <p class="member-contact"><i class="ph ph-envelope"></i> {{ $member->email }}</p>
-            @endif
-          </div>
-        </div>
-      @endforeach
-    </div>
+        @endforeach
+      </div>
+    </section>
   @else
     <p style="color:#666;">{{ app()->getLocale() === 'bn' ? 'কার্যনির্বাহী কমিটির তথ্য শীঘ্রই আপডেট করা হবে।' : 'Executive committee information will be updated soon.' }}</p>
   @endif
@@ -148,12 +62,10 @@
 @push('scripts')
 <script>
 (function() {
-  // IntersectionObserver lazy load for member images
   if (!('IntersectionObserver' in window)) {
-    // Fallback: load all immediately
     document.querySelectorAll('.member-photo[data-src]').forEach(function(img) {
       img.src = img.dataset.src;
-      img.classList.add('loaded');
+      img.style.filter = 'none';
     });
     return;
   }
@@ -167,28 +79,29 @@
           const tempImg = new Image();
           tempImg.onload = function() {
             img.src = newSrc;
-            img.classList.add('loaded');
+            img.style.filter = 'none';
           };
           tempImg.onerror = function() {
-            img.classList.add('loaded');
+            img.style.filter = 'none';
           };
           tempImg.src = newSrc;
         } else {
-          img.classList.add('loaded');
+          img.style.filter = 'none';
         }
         observer.unobserve(img);
       }
     });
   }, {
-    rootMargin: '200px 0px', // Start loading 200px before visible
+    rootMargin: '250px 0px',
     threshold: 0.01
   });
 
-  document.querySelectorAll('.member-photo:not(.loaded)').forEach(function(img) {
-    observer.observe(img);
+  document.querySelectorAll('.member-photo[data-src]').forEach(function(img) {
+    if (img.getAttribute('loading') !== 'eager') {
+      observer.observe(img);
+    }
   });
 })();
 </script>
 @endpush
 @endsection
-
