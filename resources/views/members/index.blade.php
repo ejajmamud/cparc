@@ -16,9 +16,9 @@
           @php
             $imgSrc = $member->photo ? asset('storage/' . $member->photo) : asset('images/club/logo.jpeg');
           @endphp
-          <div class="container-col-3" style="margin-bottom:var(--spacing-large);">
+          <div class="container-col-3" style="margin-bottom:var(--spacing-large); display:flex; flex-direction:column;">
             <div class="person-card-widget"
-                 style="background:#fff; border-radius:var(--radius-medium); overflow:hidden; box-shadow:var(--shadow-small); text-align:center; padding-bottom:var(--spacing-medium);">
+                 style="background:#fff; border-radius:var(--radius-medium); overflow:hidden; box-shadow:var(--shadow-small); text-align:center; padding-bottom:var(--spacing-medium); display:flex; flex-direction:column; height:100%;">
               <div class="person-card-image-wrapper" style="background:var(--color-normal-light); height:180px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
                 <img class="person-card-image member-photo"
                      {{-- Eager load first 3, lazy load the rest --}}
@@ -30,7 +30,7 @@
                      decoding="async"
                      onerror="this.src='{{ asset('images/club/logo.jpeg') }}'; this.style.filter='none';">
               </div>
-              <div class="person-card-info" style="padding:var(--spacing-medium);">
+              <div class="person-card-info" style="padding:var(--spacing-medium); display:flex; flex-direction:column; flex-grow:1;">
                 <p class="person-card-name" style="font-weight:600; font-size:var(--text-large); margin:0 0 4px;">
                   {{ app()->getLocale() === 'bn' && $member->name_bn ? $member->name_bn : $member->name }}
                 </p>
