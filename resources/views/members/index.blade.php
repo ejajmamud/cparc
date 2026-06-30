@@ -2,6 +2,14 @@
 
 @section('title', app()->getLocale() === 'bn' ? 'কার্যনির্বাহী কমিটি | চট্টগ্রাম বন্দর রিপাবলিক ক্লাব' : 'Executive Committee | Chittagong Port Republic Club')
 
+@push('styles')
+<style>
+  /* Members page: remove grey body wash so site background shows through */
+  body { background-color: transparent !important; }
+  main { background: transparent !important; }
+</style>
+@endpush
+
 @section('content')
 <div style="max-width:var(--container-large); margin:0 auto; padding:var(--spacing-large) var(--spacing-medium);">
 
@@ -18,7 +26,7 @@
           @endphp
           <div class="container-col-3" style="margin-bottom:var(--spacing-large); display:flex; flex-direction:column;">
             <div class="person-card-widget"
-                 style="background:transparent; border-radius:var(--radius-medium); overflow:hidden; box-shadow:none; text-align:center; padding-bottom:var(--spacing-medium); display:flex; flex-direction:column; height:100%;">
+                 style="background:#fff; border-radius:var(--radius-medium); overflow:hidden; box-shadow:var(--shadow-small); text-align:center; padding-bottom:var(--spacing-medium); display:flex; flex-direction:column; height:100%;">
               <div class="person-card-image-wrapper" style="background:transparent; height:200px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden;">
                 <img class="person-card-image member-photo"
                      {{-- Eager load first 3, lazy load the rest --}}
