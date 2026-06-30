@@ -245,4 +245,28 @@ Route::get('/test-zip', function() {
     ]);
 });
 
+Route::get('/test-write', function() {
+    $dir = storage_path('app/public');
+    $testFile = $dir . '/test_write.txt';
+    $log = [];
+    $log['public_path_writeable'] = is_writable(public_path()) ? 'YES' : 'NO';
+    $log['storage_path_writeable'] = is_writable(storage_path()) ? 'YES' : 'NO';
+    $log['app_path_writeable'] = is_writable(storage_path('app')) ? 'YES' : 'NO';
+    
+    try {
+        if (!file_exists($dir)) {
+            $log['mkdir_attempt'] = mkdir($dir, 0777, true) ? 'SUCCESS' : 'FAILED';
+        } else {
+            $log['dir_exists'] = 'YES';
+        }
+        $log['file_put_attempt'] = file_put_contents($testFile, 'test') !== false ? 'SUCCESS' : 'FAILED';
+        if (file_exists($testFile)) {
+            unlink($testFile);
+        }
+    } catch (\Exception $e) {
+        $log['exception'] = $e->getMessage();
+    }
+    return response()->json($log);
+});
+
 
