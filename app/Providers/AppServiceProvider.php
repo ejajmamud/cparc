@@ -24,6 +24,20 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
+        // Auto-fix broken public storage symlink
+        try {
+            $link = public_path('storage');
+            $target = storage_path('app/public');
+            if (!file_exists($link)) {
+                if (is_link($link) || is_dir($link)) {
+                    @unlink($link);
+                }
+                @symlink($target, $link);
+            }
+        } catch (\Exception $e) {
+            // Silence
+        }
+
         // Dynamically override mail configuration from settings
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
