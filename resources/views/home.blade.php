@@ -400,9 +400,14 @@
       <h2 class="section-heading"><i class="ph ph-images"></i> {{ __('site.photo_gallery') }}</h2>
       <div class="cprc-gallery-grid">
         @forelse($galleryPhotos as $photo)
-          <a href="{{ asset($photo->path) }}" target="_blank" class="cprc-gallery-item">
-            <img src="{{ asset($photo->thumbnail ?? $photo->path) }}"
-                 alt="{{ $photo->caption ?? __('site.club_name') }}">
+          @php
+            $gSrc = (str_starts_with($photo->path,'http')) ? $photo->path : asset('storage/'.$photo->path);
+            $gThumb = $photo->thumbnail ? (str_starts_with($photo->thumbnail,'http') ? $photo->thumbnail : asset('storage/'.$photo->thumbnail)) : $gSrc;
+          @endphp
+          <a href="{{ $gSrc }}" target="_blank" class="cprc-gallery-item">
+            <img src="{{ $gThumb }}"
+                 alt="{{ $photo->caption ?? __('site.club_name') }}"
+                 loading="lazy">
           </a>
         @empty
           <p class="cprc-empty-item">{{ app()->getLocale() === 'bn' ? 'গ্যালারি ছবি শীঘ্রই আসছে।' : 'Gallery photos coming soon.' }}</p>
