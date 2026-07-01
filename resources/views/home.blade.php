@@ -398,23 +398,33 @@
     {{-- Photo Gallery --}}
     <div class="cprc-section-block cprc-gallery-section">
       <h2 class="section-heading"><i class="ph ph-images"></i> {{ __('site.photo_gallery') }}</h2>
-      <div class="cprc-gallery-grid">
-        @forelse($galleryPhotos as $photo)
-          @php
-            $gSrc = (str_starts_with($photo->path,'images/') || str_starts_with($photo->path,'http')) ? asset($photo->path) : asset('storage/'.$photo->path);
-            $gThumb = $photo->thumbnail ? ((str_starts_with($photo->thumbnail,'images/') || str_starts_with($photo->thumbnail,'http')) ? asset($photo->thumbnail) : asset('storage/'.$photo->thumbnail)) : $gSrc;
-          @endphp
-          <a href="{{ $gSrc }}" target="_blank" class="cprc-gallery-item">
-            <img src="{{ $gThumb }}"
-                 alt="{{ $photo->caption ?? __('site.club_name') }}"
-                 loading="lazy">
-          </a>
-        @empty
-          <p class="cprc-empty-item">{{ app()->getLocale() === 'bn' ? 'গ্যালারি ছবি শীঘ্রই আসছে।' : 'Gallery photos coming soon.' }}</p>
-        @endforelse
-      </div>
+      @if($galleryPhotos->count())
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+          @foreach($galleryPhotos as $photo)
+            @php
+              $gSrc = (str_starts_with($photo->path,'images/') || str_starts_with($photo->path,'http'))
+                        ? asset($photo->path)
+                        : asset('storage/'.$photo->path);
+              $gThumb = $photo->thumbnail
+                        ? asset('storage/'.$photo->thumbnail)
+                        : $gSrc;
+            @endphp
+            <a href="{{ $gSrc }}" target="_blank"
+               style="display:block; aspect-ratio:1; overflow:hidden; border-radius:6px; background:#e5e7eb;">
+              <img src="{{ $gThumb }}"
+                   alt="{{ $photo->caption ?? '' }}"
+                   loading="lazy" decoding="async"
+                   style="width:100%; height:100%; object-fit:cover; transition:transform .3s;"
+                   onmouseover="this.style.transform='scale(1.05)'"
+                   onmouseout="this.style.transform='scale(1)'">
+            </a>
+          @endforeach
+        </div>
+      @else
+        <p style="color:#888;">{{ app()->getLocale() === 'bn' ? 'গ্যালারি ছবি শীঘ্রই আসছে।' : 'Gallery photos coming soon.' }}</p>
+      @endif
       <div class="all-btn" style="margin-top:var(--spacing-medium);">
-        <a href="{{ route('gallery.index') }}">{{ __('site.view_full_gallery') }} <i class="ph ph-arrow-right"></i></a>
+        <a href="{{ route('gallery.index') }}">{{ app()->getLocale() === 'bn' ? 'সম্পূর্ণ গ্যালারি দেখুন' : 'View Full Gallery' }} <i class="ph ph-arrow-right"></i></a>
       </div>
     </div>
 

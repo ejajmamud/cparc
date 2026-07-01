@@ -39,7 +39,7 @@ class HomeController extends Controller
             ->where('event_date', '>=', now()->toDateString())
             ->orderBy('event_date')->take(5)->get();
         $executives    = Member::where('is_published', true)->where('type', 'executive')->orderBy('sort_order')->take(8)->get();
-        $galleryPhotos = GalleryPhoto::where('is_published', true)->orderByDesc('created_at')->take(6)->get();
+        $galleryPhotos = GalleryPhoto::where('is_published', true)->orderByDesc('created_at')->take(9)->get();
         $packages      = Package::where('is_active', true)->orderBy('sort_order')->get();
 
         return view('home', compact(
