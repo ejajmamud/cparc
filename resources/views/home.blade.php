@@ -401,8 +401,8 @@
       <div class="cprc-gallery-grid">
         @forelse($galleryPhotos as $photo)
           @php
-            $gSrc = (str_starts_with($photo->path,'http')) ? $photo->path : asset('storage/'.$photo->path);
-            $gThumb = $photo->thumbnail ? (str_starts_with($photo->thumbnail,'http') ? $photo->thumbnail : asset('storage/'.$photo->thumbnail)) : $gSrc;
+            $gSrc = (str_starts_with($photo->path,'images/') || str_starts_with($photo->path,'http')) ? asset($photo->path) : asset('storage/'.$photo->path);
+            $gThumb = $photo->thumbnail ? ((str_starts_with($photo->thumbnail,'images/') || str_starts_with($photo->thumbnail,'http')) ? asset($photo->thumbnail) : asset('storage/'.$photo->thumbnail)) : $gSrc;
           @endphp
           <a href="{{ $gSrc }}" target="_blank" class="cprc-gallery-item">
             <img src="{{ $gThumb }}"
