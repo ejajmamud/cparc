@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\AccountChartWidget;
+use App\Filament\Widgets\AccountStatsWidget;
+use App\Filament\Widgets\MonthlyAccountSummaryWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -32,6 +35,18 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Blue,
             ])
             ->brandName('CPRC Admin')
+            // Light mode default; user can toggle dark in profile
+            ->defaultThemeMode(\Filament\Enums\ThemeMode::Light)
+            ->darkMode(true)
+            // Locale switcher (EN / BN)
+            ->globalSearch(true)
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups([
+                \Filament\Navigation\NavigationGroup::make('Finance')->icon('heroicon-o-banknotes'),
+                \Filament\Navigation\NavigationGroup::make('Bookings')->icon('heroicon-o-calendar-days'),
+                \Filament\Navigation\NavigationGroup::make('Content')->icon('heroicon-o-document-text'),
+                \Filament\Navigation\NavigationGroup::make('Settings')->icon('heroicon-o-cog-6-tooth'),
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -40,7 +55,9 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+                AccountStatsWidget::class,
+                AccountChartWidget::class,
+                MonthlyAccountSummaryWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
