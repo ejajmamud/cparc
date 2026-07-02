@@ -8,11 +8,17 @@ use Filament\Widgets\ChartWidget;
 class AccountChartWidget extends ChartWidget
 {
     protected static ?int $sort = 3;
-    protected ?string $heading = 'Monthly Income vs Expense / মাসিক আয়-ব্যয়';
     protected int|string|array $columnSpan = 'full';
     protected ?string $maxHeight = '300px';
 
     public ?string $filter = null;
+
+    public function getHeading(): string
+    {
+        return app()->getLocale() === 'bn'
+            ? 'মাসিক আয়-ব্যয় চিত্র'
+            : 'Monthly Income vs Expense';
+    }
 
     protected function getFilters(): ?array
     {
@@ -25,13 +31,18 @@ class AccountChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        $year = (int)($this->filter ?? now()->year);
-        $data = AccountTransaction::yearlySummary($year);
+        $year  = (int)($this->filter ?? now()->year);
+        $data  = AccountTransaction::yearlySummary($year);
+        $isBn  = app()->getLocale() === 'bn';
+
+        $months = $isBn
+            ? ['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টে','অক্টো','নভে','ডিসে']
+            : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
         return [
             'datasets' => [
                 [
-                    'label'           => 'Income / আয়',
+                    'label'           => $isBn ? 'আয়' : 'Income',
                     'data'            => array_values($data['income']),
                     'backgroundColor' => 'rgba(34,197,94,0.15)',
                     'borderColor'     => 'rgb(34,197,94)',
@@ -40,7 +51,7 @@ class AccountChartWidget extends ChartWidget
                     'tension'         => 0.4,
                 ],
                 [
-                    'label'           => 'Expense / ব্যয়',
+                    'label'           => $isBn ? 'ব্যয়' : 'Expense',
                     'data'            => array_values($data['expense']),
                     'backgroundColor' => 'rgba(239,68,68,0.15)',
                     'borderColor'     => 'rgb(239,68,68)',
@@ -49,7 +60,7 @@ class AccountChartWidget extends ChartWidget
                     'tension'         => 0.4,
                 ],
             ],
-            'labels' => ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+            'labels' => $months,
         ];
     }
 

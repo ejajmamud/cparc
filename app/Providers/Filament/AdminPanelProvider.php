@@ -36,10 +36,9 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Blue,
             ])
             ->brandName('CPRC Admin')
-            // Light mode default; user can toggle dark in profile
             ->defaultThemeMode(\Filament\Enums\ThemeMode::Light)
-            ->darkMode(true)
-            // Locale switcher (EN / BN)
+            ->darkMode(false)
+            ->renderHook('panels::topbar.end', fn () => view('filament.lang-switcher'))
             ->globalSearch(true)
             ->sidebarCollapsibleOnDesktop()
             ->navigationGroups([
