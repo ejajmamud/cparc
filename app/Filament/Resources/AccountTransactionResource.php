@@ -24,9 +24,13 @@ class AccountTransactionResource extends Resource
 {
     protected static ?string $model = AccountTransaction::class;
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationLabel = 'আয়-ব্যয় / Accounts';
     protected static \UnitEnum|string|null $navigationGroup = 'Finance';
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationLabel(): string
+    {
+        return app()->getLocale() === 'bn' ? 'আয়-ব্যয়' : 'Accounts';
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -163,14 +167,12 @@ class AccountTransactionResource extends Resource
                 TextColumn::make('income_amount')
                     ->label('আয়/জমা ৳')
                     ->formatStateUsing(fn($state) => $state > 0 ? '৳ ' . number_format($state, 0) : '—')
-                    ->color('success')
-                    ->weight('bold'),
+                    ->color('success'),
 
                 TextColumn::make('expense_amount')
                     ->label('ব্যয়/উত্তোলন ৳')
                     ->formatStateUsing(fn($state) => $state > 0 ? '৳ ' . number_format($state, 0) : '—')
-                    ->color('danger')
-                    ->weight('bold'),
+                    ->color('danger'),
 
                 TextColumn::make('electricity_bill')
                     ->label('বিদ্যুৎ বিল ৳')
@@ -204,7 +206,6 @@ class AccountTransactionResource extends Resource
 
                 TextColumn::make('voucher_number')
                     ->label('ভাউচার')
-                    ->fontFamily('mono')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('deposit_date', 'desc')
@@ -243,32 +244,30 @@ class AccountTransactionResource extends Resource
                     ->label('📄 Monthly PDF')
                     ->color('danger')
                     ->form([
-                        Grid::make(2)->schema([
-                            Select::make('month')
-                                ->label('Month / মাস')
-                                ->options([
-                                    1=>'January / জানুয়ারি',2=>'February / ফেব্রুয়ারি',
-                                    3=>'March / মার্চ',4=>'April / এপ্রিল',
-                                    5=>'May / মে',6=>'June / জুন',
-                                    7=>'July / জুলাই',8=>'August / আগস্ট',
-                                    9=>'September / সেপ্টেম্বর',10=>'October / অক্টোবর',
-                                    11=>'November / নভেম্বর',12=>'December / ডিসেম্বর',
-                                ])
-                                ->default(now()->month)
-                                ->required(),
-                            Select::make('year')
-                                ->label('Year / বছর')
-                                ->options(array_combine(
-                                    range(now()->year, now()->year - 5),
-                                    range(now()->year, now()->year - 5)
-                                ))
-                                ->default(now()->year)
-                                ->required(),
-                        ]),
+                        Select::make('month')
+                            ->label('Month / মাস')
+                            ->options([
+                                1=>'January / জানুয়ারি',2=>'February / ফেব্রুয়ারি',
+                                3=>'March / মার্চ',4=>'April / এপ্রিল',
+                                5=>'May / মে',6=>'June / জুন',
+                                7=>'July / জুলাই',8=>'August / আগস্ট',
+                                9=>'September / সেপ্টেম্বর',10=>'October / অক্টোবর',
+                                11=>'November / নভেম্বর',12=>'December / ডিসেম্বর',
+                            ])
+                            ->default(now()->month)
+                            ->required(),
+                        Select::make('year')
+                            ->label('Year / বছর')
+                            ->options(array_combine(
+                                range(now()->year, now()->year - 5),
+                                range(now()->year, now()->year - 5)
+                            ))
+                            ->default(now()->year)
+                            ->required(),
                     ])
-                    ->action(function (array $data) {
+                    ->action(function (array $data, $livewire) {
                         $url = route('admin.accounts.pdf', ['month' => $data['month'], 'year' => $data['year']]);
-                        $this->redirect($url, navigate: false);
+                        $livewire->js("window.open('{$url}', '_blank')");
                     }),
             ])
             ->actions([

@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Widgets\AccountChartWidget;
 use App\Filament\Widgets\AccountStatsWidget;
 use App\Filament\Widgets\MonthlyAccountSummaryWidget;
+use App\Http\Middleware\SetLocale;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -69,6 +70,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                SetLocale::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
