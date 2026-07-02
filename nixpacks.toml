@@ -1,2 +1,2 @@
 [start]
-cmd = "node /assets/scripts/prestart.mjs /assets/nginx.template.conf /nginx.conf && (php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf)"
+cmd = "node /assets/scripts/prestart.mjs /assets/nginx.template.conf /nginx.conf && php /app/artisan migrate --force --no-interaction && (php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf)"
