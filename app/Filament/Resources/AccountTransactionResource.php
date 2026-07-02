@@ -230,13 +230,13 @@ class AccountTransactionResource extends Resource
                     )),
 
                 Filter::make('date_range')
-                    ->form([
+                    ->schema([
                         DatePicker::make('from')->label('From / থেকে'),
                         DatePicker::make('until')->label('Until / পর্যন্ত'),
                     ])
                     ->query(fn(Builder $q, array $data) => $q
-                        ->when($data['from'], fn($q) => $q->whereDate('deposit_date', '>=', $data['from']))
-                        ->when($data['until'], fn($q) => $q->whereDate('deposit_date', '<=', $data['until']))
+                        ->when($data['from'] ?? null, fn($q) => $q->whereDate('deposit_date', '>=', $data['from']))
+                        ->when($data['until'] ?? null, fn($q) => $q->whereDate('deposit_date', '<=', $data['until']))
                     ),
             ])
             ->headerActions([
