@@ -1,14 +1,14 @@
-<div class="flex items-center gap-1 me-2">
-    @php $locale = app()->getLocale(); @endphp
+@php $locale = app()->getLocale(); @endphp
+<div class="flex items-center me-3" style="gap:4px;">
     <a href="{{ route('lang.switch', 'en') }}"
-       class="px-2 py-1 rounded text-xs font-semibold transition-colors
-              {{ $locale === 'en' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200' }}">
+       style="padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600; line-height:1; text-decoration:none; transition:background .15s,color .15s;
+              {{ $locale === 'en' ? 'background:#3b82f6; color:#fff;' : 'background:transparent; color:#6b7280;' }}">
         EN
     </a>
-    <span class="text-gray-300 dark:text-gray-600 text-xs">|</span>
+    <span style="color:#d1d5db; font-size:11px; user-select:none;">|</span>
     <a href="{{ route('lang.switch', 'bn') }}"
-       class="px-2 py-1 rounded text-xs font-semibold transition-colors
-              {{ $locale === 'bn' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200' }}">
+       style="padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600; line-height:1; text-decoration:none; transition:background .15s,color .15s;
+              {{ $locale === 'bn' ? 'background:#3b82f6; color:#fff;' : 'background:transparent; color:#6b7280;' }}">
         বাং
     </a>
 </div>

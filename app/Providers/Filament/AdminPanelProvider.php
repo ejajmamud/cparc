@@ -38,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('CPRC Admin')
             ->defaultThemeMode(\Filament\Enums\ThemeMode::Light)
             ->darkMode(false)
-            ->renderHook('panels::topbar.end', fn () => view('filament.lang-switcher'))
+            ->renderHook('panels::user-menu.before', fn () => view('filament.lang-switcher'))
             ->globalSearch(true)
             ->sidebarCollapsibleOnDesktop()
             ->navigationGroups([

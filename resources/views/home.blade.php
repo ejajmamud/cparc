@@ -398,31 +398,171 @@
     {{-- Photo Gallery --}}
     <div class="cprc-section-block cprc-gallery-section">
       <h2 class="section-heading"><i class="ph ph-images"></i> {{ __('site.photo_gallery') }}</h2>
+
       @if($galleryPhotos->count())
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
-          @foreach($galleryPhotos as $photo)
-            @php
-              $gSrc = (str_starts_with($photo->path,'images/') || str_starts_with($photo->path,'http'))
-                        ? asset($photo->path)
-                        : asset('storage/'.$photo->path);
-              $gThumb = $photo->thumbnail
-                        ? asset('storage/'.$photo->thumbnail)
-                        : $gSrc;
-            @endphp
-            <a href="{{ $gSrc }}" target="_blank"
-               style="display:block; aspect-ratio:1; overflow:hidden; border-radius:6px; background:#e5e7eb;">
-              <img src="{{ $gThumb }}"
-                   alt="{{ $photo->caption ?? '' }}"
-                   loading="lazy" decoding="async"
-                   style="width:100%; height:100%; object-fit:cover; transition:transform .3s;"
-                   onmouseover="this.style.transform='scale(1.05)'"
-                   onmouseout="this.style.transform='scale(1)'">
-            </a>
-          @endforeach
+        @php
+          $gPhotos = $galleryPhotos->map(function($photo) {
+            $src = (str_starts_with($photo->path,'images/') || str_starts_with($photo->path,'http'))
+                    ? asset($photo->path)
+                    : asset('storage/'.$photo->path);
+            $thumb = $photo->thumbnail ? asset('storage/'.$photo->thumbnail) : $src;
+            return ['src' => $src, 'thumb' => $thumb, 'caption' => $photo->caption ?? ''];
+          })->values();
+        @endphp
+
+        <div class="cprc-slider" id="cprcSlider">
+
+          {{-- Main stage --}}
+          <div class="cprc-slider-stage">
+            <div class="cprc-slider-track" id="cprcTrack">
+              @foreach($gPhotos as $i => $gp)
+                <div class="cprc-slide" data-index="{{ $i }}">
+                  <img src="{{ $gp['src'] }}" alt="{{ $gp['caption'] }}"
+                       loading="{{ $i === 0 ? 'eager' : 'lazy' }}"
+                       onclick="cprcLightbox({{ $i }})">
+                  @if($gp['caption'])
+                    <div class="cprc-slide-caption">{{ $gp['caption'] }}</div>
+                  @endif
+                </div>
+              @endforeach
+            </div>
+
+            <button class="cprc-arrow cprc-arrow-prev" onclick="cprcMove(-1)" aria-label="Previous">
+              <i class="ph ph-caret-left"></i>
+            </button>
+            <button class="cprc-arrow cprc-arrow-next" onclick="cprcMove(1)" aria-label="Next">
+              <i class="ph ph-caret-right"></i>
+            </button>
+
+            <div class="cprc-slider-counter" id="cprcCounter">1 / {{ $gPhotos->count() }}</div>
+          </div>
+
+          {{-- Thumbnail strip --}}
+          @if($gPhotos->count() > 1)
+          <div class="cprc-thumb-strip" id="cprcThumbStrip">
+            @foreach($gPhotos as $i => $gp)
+              <button class="cprc-thumb{{ $i === 0 ? ' active' : '' }}"
+                      onclick="cprcGoto({{ $i }})"
+                      aria-label="Photo {{ $i+1 }}">
+                <img src="{{ $gp['thumb'] }}" alt="{{ $gp['caption'] }}" loading="lazy">
+              </button>
+            @endforeach
+          </div>
+          @endif
         </div>
+
+        {{-- Lightbox --}}
+        <div class="cprc-lightbox" id="cprcLightbox" onclick="cprcCloseLightbox()">
+          <button class="cprc-lb-close" onclick="cprcCloseLightbox()" aria-label="Close">
+            <i class="ph ph-x"></i>
+          </button>
+          <button class="cprc-lb-arrow cprc-lb-prev" onclick="event.stopPropagation();cprcLbMove(-1)" aria-label="Previous">
+            <i class="ph ph-caret-left"></i>
+          </button>
+          <div class="cprc-lb-inner" onclick="event.stopPropagation()">
+            <img id="cprcLbImg" src="" alt="">
+            <p id="cprcLbCaption" class="cprc-lb-caption"></p>
+          </div>
+          <button class="cprc-lb-arrow cprc-lb-next" onclick="event.stopPropagation();cprcLbMove(1)" aria-label="Next">
+            <i class="ph ph-caret-right"></i>
+          </button>
+        </div>
+
+        <script>
+        (function(){
+          const photos = @json($gPhotos);
+          const total  = photos.length;
+          let current  = 0;
+          let lbIndex  = 0;
+          let timer    = null;
+
+          const track   = document.getElementById('cprcTrack');
+          const thumbs  = document.querySelectorAll('.cprc-thumb');
+          const counter = document.getElementById('cprcCounter');
+
+          function setSlide(n, animate) {
+            current = (n + total) % total;
+            track.style.transition = animate === false ? 'none' : 'transform .45s cubic-bezier(.4,0,.2,1)';
+            track.style.transform  = `translateX(-${current * 100}%)`;
+            counter.textContent    = `${current + 1} / ${total}`;
+            thumbs.forEach((t, i) => t.classList.toggle('active', i === current));
+            // scroll thumb into view
+            if (thumbs[current]) {
+              thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+          }
+
+          window.cprcMove  = (d) => { resetTimer(); setSlide(current + d, true); };
+          window.cprcGoto  = (i) => { resetTimer(); setSlide(i, true); };
+
+          function resetTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => setSlide(current + 1, true), 5000);
+          }
+
+          // Keyboard
+          document.addEventListener('keydown', (e) => {
+            const lb = document.getElementById('cprcLightbox');
+            if (lb.classList.contains('open')) {
+              if (e.key === 'ArrowLeft')  cprcLbMove(-1);
+              if (e.key === 'ArrowRight') cprcLbMove(1);
+              if (e.key === 'Escape')     cprcCloseLightbox();
+            } else {
+              if (e.key === 'ArrowLeft')  cprcMove(-1);
+              if (e.key === 'ArrowRight') cprcMove(1);
+            }
+          });
+
+          // Touch swipe
+          let tx = 0;
+          track.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; }, {passive:true});
+          track.addEventListener('touchend',   (e) => {
+            const dx = e.changedTouches[0].clientX - tx;
+            if (Math.abs(dx) > 40) cprcMove(dx < 0 ? 1 : -1);
+          });
+
+          // Pause on hover
+          const stage = document.querySelector('.cprc-slider-stage');
+          stage.addEventListener('mouseenter', () => clearInterval(timer));
+          stage.addEventListener('mouseleave', resetTimer);
+
+          // Lightbox
+          window.cprcLightbox = function(i) {
+            lbIndex = i;
+            const lb  = document.getElementById('cprcLightbox');
+            const img = document.getElementById('cprcLbImg');
+            const cap = document.getElementById('cprcLbCaption');
+            img.src        = photos[lbIndex].src;
+            cap.textContent = photos[lbIndex].caption;
+            lb.classList.add('open');
+            document.body.style.overflow = 'hidden';
+          };
+          window.cprcLbMove = function(d) {
+            lbIndex = (lbIndex + d + total) % total;
+            const img = document.getElementById('cprcLbImg');
+            const cap = document.getElementById('cprcLbCaption');
+            img.style.opacity = '0';
+            setTimeout(() => {
+              img.src = photos[lbIndex].src;
+              cap.textContent = photos[lbIndex].caption;
+              img.style.opacity = '1';
+            }, 150);
+          };
+          window.cprcCloseLightbox = function() {
+            document.getElementById('cprcLightbox').classList.remove('open');
+            document.body.style.overflow = '';
+          };
+
+          resetTimer();
+        })();
+        </script>
+
       @else
-        <p style="color:#888;">{{ app()->getLocale() === 'bn' ? 'গ্যালারি ছবি শীঘ্রই আসছে।' : 'Gallery photos coming soon.' }}</p>
+        <p style="color:#888; text-align:center; padding:2rem 0;">
+          {{ app()->getLocale() === 'bn' ? 'গ্যালারি ছবি শীঘ্রই আসছে।' : 'Gallery photos coming soon.' }}
+        </p>
       @endif
+
       <div class="all-btn" style="margin-top:var(--spacing-medium);">
         <a href="{{ route('gallery.index') }}">{{ app()->getLocale() === 'bn' ? 'সম্পূর্ণ গ্যালারি দেখুন' : 'View Full Gallery' }} <i class="ph ph-arrow-right"></i></a>
       </div>
