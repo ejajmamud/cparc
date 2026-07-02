@@ -5,7 +5,7 @@ namespace App\Filament\Resources\AccountTransactionResource\Pages;
 use App\Filament\Resources\AccountTransactionResource;
 use App\Models\AccountTransaction;
 use Filament\Actions;
-use Filament\Resources\Components\Tab;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 
