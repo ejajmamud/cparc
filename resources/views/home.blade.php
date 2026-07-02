@@ -402,159 +402,70 @@
       @if($galleryPhotos->count())
         @php
           $gPhotos = $galleryPhotos->map(function($photo) {
-            $src = (str_starts_with($photo->path,'images/') || str_starts_with($photo->path,'http'))
-                    ? asset($photo->path)
-                    : asset('storage/'.$photo->path);
+            $src   = (str_starts_with($photo->path,'images/') || str_starts_with($photo->path,'http'))
+                      ? asset($photo->path) : asset('storage/'.$photo->path);
             $thumb = $photo->thumbnail ? asset('storage/'.$photo->thumbnail) : $src;
             return ['src' => $src, 'thumb' => $thumb, 'caption' => $photo->caption ?? ''];
           })->values();
         @endphp
 
-        <div class="cprc-slider" id="cprcSlider">
-
-          {{-- Main stage --}}
-          <div class="cprc-slider-stage">
-            <div class="cprc-slider-track" id="cprcTrack">
-              @foreach($gPhotos as $i => $gp)
-                <div class="cprc-slide" data-index="{{ $i }}">
-                  <img src="{{ $gp['src'] }}" alt="{{ $gp['caption'] }}"
-                       loading="{{ $i === 0 ? 'eager' : 'lazy' }}"
-                       onclick="cprcLightbox({{ $i }})">
-                  @if($gp['caption'])
-                    <div class="cprc-slide-caption">{{ $gp['caption'] }}</div>
-                  @endif
-                </div>
-              @endforeach
-            </div>
-
-            <button class="cprc-arrow cprc-arrow-prev" onclick="cprcMove(-1)" aria-label="Previous">
-              <i class="ph ph-caret-left"></i>
-            </button>
-            <button class="cprc-arrow cprc-arrow-next" onclick="cprcMove(1)" aria-label="Next">
-              <i class="ph ph-caret-right"></i>
-            </button>
-
-            <div class="cprc-slider-counter" id="cprcCounter">1 / {{ $gPhotos->count() }}</div>
-          </div>
-
-          {{-- Thumbnail strip --}}
-          @if($gPhotos->count() > 1)
-          <div class="cprc-thumb-strip" id="cprcThumbStrip">
-            @foreach($gPhotos as $i => $gp)
-              <button class="cprc-thumb{{ $i === 0 ? ' active' : '' }}"
-                      onclick="cprcGoto({{ $i }})"
-                      aria-label="Photo {{ $i+1 }}">
-                <img src="{{ $gp['thumb'] }}" alt="{{ $gp['caption'] }}" loading="lazy">
-              </button>
+        {{-- Swiper: main big view --}}
+        <div class="swiper cprc-swiper-main">
+          <div class="swiper-wrapper">
+            @foreach($gPhotos as $gp)
+              <div class="swiper-slide">
+                <img src="{{ $gp['src'] }}" alt="{{ $gp['caption'] }}">
+                @if($gp['caption'])
+                  <div class="cprc-swiper-caption">{{ $gp['caption'] }}</div>
+                @endif
+              </div>
             @endforeach
           </div>
-          @endif
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-pagination"></div>
         </div>
 
-        {{-- Lightbox --}}
-        <div class="cprc-lightbox" id="cprcLightbox" onclick="cprcCloseLightbox()">
-          <button class="cprc-lb-close" onclick="cprcCloseLightbox()" aria-label="Close">
-            <i class="ph ph-x"></i>
-          </button>
-          <button class="cprc-lb-arrow cprc-lb-prev" onclick="event.stopPropagation();cprcLbMove(-1)" aria-label="Previous">
-            <i class="ph ph-caret-left"></i>
-          </button>
-          <div class="cprc-lb-inner" onclick="event.stopPropagation()">
-            <img id="cprcLbImg" src="" alt="">
-            <p id="cprcLbCaption" class="cprc-lb-caption"></p>
+        {{-- Swiper: thumbs --}}
+        @if($gPhotos->count() > 1)
+        <div class="swiper cprc-swiper-thumbs">
+          <div class="swiper-wrapper">
+            @foreach($gPhotos as $gp)
+              <div class="swiper-slide">
+                <img src="{{ $gp['thumb'] }}" alt="{{ $gp['caption'] }}">
+              </div>
+            @endforeach
           </div>
-          <button class="cprc-lb-arrow cprc-lb-next" onclick="event.stopPropagation();cprcLbMove(1)" aria-label="Next">
-            <i class="ph ph-caret-right"></i>
-          </button>
         </div>
+        @endif
 
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
         <script>
-        (function(){
-          const photos = @json($gPhotos);
-          const total  = photos.length;
-          let current  = 0;
-          let lbIndex  = 0;
-          let timer    = null;
-
-          const track   = document.getElementById('cprcTrack');
-          const thumbs  = document.querySelectorAll('.cprc-thumb');
-          const counter = document.getElementById('cprcCounter');
-
-          function setSlide(n, animate) {
-            current = (n + total) % total;
-            track.style.transition = animate === false ? 'none' : 'transform .45s cubic-bezier(.4,0,.2,1)';
-            track.style.transform  = `translateX(-${current * 100}%)`;
-            counter.textContent    = `${current + 1} / ${total}`;
-            thumbs.forEach((t, i) => t.classList.toggle('active', i === current));
-            // scroll thumb into view
-            if (thumbs[current]) {
-              thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            }
-          }
-
-          window.cprcMove  = (d) => { resetTimer(); setSlide(current + d, true); };
-          window.cprcGoto  = (i) => { resetTimer(); setSlide(i, true); };
-
-          function resetTimer() {
-            clearInterval(timer);
-            timer = setInterval(() => setSlide(current + 1, true), 5000);
-          }
-
-          // Keyboard
-          document.addEventListener('keydown', (e) => {
-            const lb = document.getElementById('cprcLightbox');
-            if (lb.classList.contains('open')) {
-              if (e.key === 'ArrowLeft')  cprcLbMove(-1);
-              if (e.key === 'ArrowRight') cprcLbMove(1);
-              if (e.key === 'Escape')     cprcCloseLightbox();
-            } else {
-              if (e.key === 'ArrowLeft')  cprcMove(-1);
-              if (e.key === 'ArrowRight') cprcMove(1);
-            }
+        document.addEventListener('DOMContentLoaded', function () {
+          var thumbSwiper = new Swiper('.cprc-swiper-thumbs', {
+            spaceBetween: 6,
+            slidesPerView: 5,
+            freeMode: true,
+            watchSlidesProgress: true,
+            breakpoints: {
+              0:   { slidesPerView: 4 },
+              480: { slidesPerView: 5 },
+              640: { slidesPerView: 6 },
+            },
           });
 
-          // Touch swipe
-          let tx = 0;
-          track.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; }, {passive:true});
-          track.addEventListener('touchend',   (e) => {
-            const dx = e.changedTouches[0].clientX - tx;
-            if (Math.abs(dx) > 40) cprcMove(dx < 0 ? 1 : -1);
+          var mainSwiper = new Swiper('.cprc-swiper-main', {
+            spaceBetween: 0,
+            loop: true,
+            autoplay: { delay: 4500, disableOnInteraction: false, pauseOnMouseEnter: true },
+            speed: 600,
+            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+            pagination: { el: '.swiper-pagination', clickable: true, dynamicBullets: true },
+            thumbs: { swiper: thumbSwiper },
+            keyboard: { enabled: true },
           });
-
-          // Pause on hover
-          const stage = document.querySelector('.cprc-slider-stage');
-          stage.addEventListener('mouseenter', () => clearInterval(timer));
-          stage.addEventListener('mouseleave', resetTimer);
-
-          // Lightbox
-          window.cprcLightbox = function(i) {
-            lbIndex = i;
-            const lb  = document.getElementById('cprcLightbox');
-            const img = document.getElementById('cprcLbImg');
-            const cap = document.getElementById('cprcLbCaption');
-            img.src        = photos[lbIndex].src;
-            cap.textContent = photos[lbIndex].caption;
-            lb.classList.add('open');
-            document.body.style.overflow = 'hidden';
-          };
-          window.cprcLbMove = function(d) {
-            lbIndex = (lbIndex + d + total) % total;
-            const img = document.getElementById('cprcLbImg');
-            const cap = document.getElementById('cprcLbCaption');
-            img.style.opacity = '0';
-            setTimeout(() => {
-              img.src = photos[lbIndex].src;
-              cap.textContent = photos[lbIndex].caption;
-              img.style.opacity = '1';
-            }, 150);
-          };
-          window.cprcCloseLightbox = function() {
-            document.getElementById('cprcLightbox').classList.remove('open');
-            document.body.style.overflow = '';
-          };
-
-          resetTimer();
-        })();
+        });
         </script>
 
       @else
