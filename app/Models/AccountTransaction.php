@@ -11,116 +11,83 @@ class AccountTransaction extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'type', 'category', 'sub_category', 'amount', 'transaction_date',
-        'description', 'reference_number', 'payment_method', 'bank_name',
-        'cheque_number', 'voucher_number', 'approved_by', 'remarks',
-        'attachment', 'created_by',
+        'voucher_number', 'deposit_date', 'event_date', 'type', 'category',
+        'income_amount', 'expense_amount', 'electricity_bill', 'refund_amount',
+        'cheque_number', 'cheque_serial', 'payment_method', 'bank_name',
+        'bank_deposit_details', 'description', 'approved_by', 'attachment',
+        'month', 'year', 'created_by',
     ];
 
     protected $casts = [
-        'transaction_date' => 'date',
-        'amount' => 'decimal:2',
+        'deposit_date'     => 'date',
+        'event_date'       => 'date',
+        'income_amount'    => 'decimal:2',
+        'expense_amount'   => 'decimal:2',
+        'electricity_bill' => 'decimal:2',
+        'refund_amount'    => 'decimal:2',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $t) {
+            $t->month = $t->deposit_date?->month;
+            $t->year  = $t->deposit_date?->year;
+            if (empty($t->type)) {
+                $t->type = $t->income_amount > 0 ? 'income' : 'expense';
+            }
+        });
+    }
 
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public static function incomeCategories(): array
+    public static function categories(): array
     {
         return [
-            'hall_rental'      => ['en' => 'Hall Rental',        'bn' => 'হল ভাড়া'],
-            'membership_fee'   => ['en' => 'Membership Fee',     'bn' => 'সদস্যপদ ফি'],
-            'restaurant'       => ['en' => 'Restaurant Income',  'bn' => 'রেস্তোরাঁ আয়'],
-            'event_ticket'     => ['en' => 'Event Ticket',       'bn' => 'ইভেন্ট টিকেট'],
-            'donation'         => ['en' => 'Donation',           'bn' => 'দান/অনুদান'],
-            'investment_return'=> ['en' => 'Investment Return',  'bn' => 'বিনিয়োগ আয়'],
-            'government_grant' => ['en' => 'Government Grant',   'bn' => 'সরকারি অনুদান'],
-            'sports_fee'       => ['en' => 'Sports Fee',         'bn' => 'ক্রীড়া ফি'],
-            'locker_fee'       => ['en' => 'Locker/Storage Fee', 'bn' => 'লকার ফি'],
-            'misc_income'      => ['en' => 'Miscellaneous',      'bn' => 'বিবিধ আয়'],
+            'hall_rental'    => 'Hall Rental / হল ভাড়া',
+            'membership_fee' => 'Membership Fee / সদস্যপদ ফি',
+            'restaurant'     => 'Restaurant / রেস্তোরাঁ',
+            'event_ticket'   => 'Event Ticket / ইভেন্ট',
+            'donation'       => 'Donation / দান',
+            'salary'         => 'Salary / বেতন',
+            'utilities'      => 'Utilities / বিদ্যুৎ/গ্যাস',
+            'maintenance'    => 'Maintenance / রক্ষণাবেক্ষণ',
+            'misc'           => 'Miscellaneous / বিবিধ',
         ];
     }
 
-    public static function expenseCategories(): array
+    public static function generateVoucher(): string
     {
-        return [
-            'salary'           => ['en' => 'Salary & Wages',     'bn' => 'বেতন ও মজুরি'],
-            'utilities'        => ['en' => 'Utilities',          'bn' => 'বিদ্যুৎ/গ্যাস/পানি'],
-            'maintenance'      => ['en' => 'Maintenance/Repair', 'bn' => 'রক্ষণাবেক্ষণ'],
-            'cleaning'         => ['en' => 'Cleaning',           'bn' => 'পরিষ্কার-পরিচ্ছন্নতা'],
-            'security'         => ['en' => 'Security',           'bn' => 'নিরাপত্তা'],
-            'event_expense'    => ['en' => 'Event Expense',      'bn' => 'অনুষ্ঠান ব্যয়'],
-            'stationery'       => ['en' => 'Stationery/Office',  'bn' => 'স্টেশনারি/অফিস'],
-            'transport'        => ['en' => 'Transport',          'bn' => 'পরিবহন'],
-            'food_beverage'    => ['en' => 'Food & Beverage',    'bn' => 'খাদ্য ও পানীয়'],
-            'equipment'        => ['en' => 'Equipment/Furniture','bn' => 'যন্ত্রপাতি/আসবাব'],
-            'insurance'        => ['en' => 'Insurance',          'bn' => 'বীমা'],
-            'tax'              => ['en' => 'Tax & Govt. Fee',    'bn' => 'কর ও সরকারি ফি'],
-            'misc_expense'     => ['en' => 'Miscellaneous',      'bn' => 'বিবিধ ব্যয়'],
-        ];
-    }
-
-    public static function allCategoryOptions(): array
-    {
-        $opts = [];
-        foreach (static::incomeCategories() as $k => $v) {
-            $opts[$k] = $v['en'] . ' (Income)';
-        }
-        foreach (static::expenseCategories() as $k => $v) {
-            $opts[$k] = $v['en'] . ' (Expense)';
-        }
-        return $opts;
-    }
-
-    public static function incomeCategoryOptions(): array
-    {
-        return array_map(fn($v) => $v['en'], static::incomeCategories());
-    }
-
-    public static function expenseCategoryOptions(): array
-    {
-        return array_map(fn($v) => $v['en'], static::expenseCategories());
+        $date = now()->format('Ymd');
+        $last = static::withTrashed()->whereDate('created_at', now()->toDateString())->count();
+        return 'VCH-' . $date . '-' . str_pad($last + 1, 4, '0', STR_PAD_LEFT);
     }
 
     public static function monthlySummary(int $year, int $month): array
     {
-        $income  = static::where('type','income')->whereYear('transaction_date',$year)->whereMonth('transaction_date',$month)->sum('amount');
-        $expense = static::where('type','expense')->whereYear('transaction_date',$year)->whereMonth('transaction_date',$month)->sum('amount');
+        $rows = static::where('year', $year)->where('month', $month)->get();
         return [
-            'income'  => (float) $income,
-            'expense' => (float) $expense,
-            'balance' => (float) $income - (float) $expense,
+            'income'      => $rows->sum('income_amount'),
+            'expense'     => $rows->sum('expense_amount'),
+            'electricity' => $rows->sum('electricity_bill'),
+            'refund'      => $rows->sum('refund_amount'),
+            'net'         => $rows->sum('income_amount') - $rows->sum('expense_amount'),
         ];
     }
 
     public static function yearlySummary(int $year): array
     {
-        $rows = static::whereYear('transaction_date', $year)
-            ->selectRaw('type, MONTH(transaction_date) as m, SUM(amount) as total')
-            ->groupBy('type', 'm')
-            ->get();
-
-        $income = array_fill(1, 12, 0);
+        $income  = array_fill(1, 12, 0);
         $expense = array_fill(1, 12, 0);
-
-        foreach ($rows as $row) {
-            if ($row->type === 'income') {
-                $income[(int)$row->m] = (float) $row->total;
-            } else {
-                $expense[(int)$row->m] = (float) $row->total;
-            }
+        $rows = static::where('year', $year)
+            ->selectRaw('month, SUM(income_amount) as ti, SUM(expense_amount) as te')
+            ->groupBy('month')->get();
+        foreach ($rows as $r) {
+            $income[(int)$r->month]  = (float) $r->ti;
+            $expense[(int)$r->month] = (float) $r->te;
         }
-
-        return ['income' => $income, 'expense' => $expense];
-    }
-
-    public static function generateVoucher(string $type): string
-    {
-        $prefix = $type === 'income' ? 'RCV' : 'PYT';
-        $date   = now()->format('Ymd');
-        $last   = static::withTrashed()->where('type', $type)->whereDate('created_at', now()->toDateString())->count();
-        return $prefix . '-' . $date . '-' . str_pad($last + 1, 4, '0', STR_PAD_LEFT);
+        return compact('income', 'expense');
     }
 }

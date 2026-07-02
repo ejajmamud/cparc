@@ -51,4 +51,9 @@ Route::get('/book-hall/confirm/{ref}', [BookingController::class, 'confirm'])->n
 // Newsletter
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
 
+// Accounts PDF (admin only)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/accounts/pdf', [\App\Http\Controllers\AccountPdfController::class, 'monthly'])->name('admin.accounts.pdf');
+});
+
 

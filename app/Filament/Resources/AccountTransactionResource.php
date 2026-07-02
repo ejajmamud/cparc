@@ -9,13 +9,11 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -33,100 +31,106 @@ class AccountTransactionResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-            Section::make('Transaction Details / লেনদেনের বিবরণ')->schema([
+            Section::make('লেনদেনের তথ্য / Transaction Info')->schema([
+                Grid::make(3)->schema([
+                    DatePicker::make('deposit_date')
+                        ->label('জমা/উত্তোলনের তারিখ (Deposit Date)')
+                        ->required()
+                        ->default(now()),
+
+                    DatePicker::make('event_date')
+                        ->label('অনুষ্ঠানের তারিখ (Event Date)')
+                        ->nullable(),
+
+                    TextInput::make('voucher_number')
+                        ->label('ভাউচার নং (Voucher No.)')
+                        ->placeholder('Auto if empty')
+                        ->unique(ignoreRecord: true),
+                ]),
+
                 Grid::make(2)->schema([
                     Select::make('type')
-                        ->label('Type / ধরন')
+                        ->label('ধরন (Type)')
                         ->options([
                             'income'  => '⬆ Income / আয়',
                             'expense' => '⬇ Expense / ব্যয়',
                         ])
                         ->required()
-                        ->live()
-                        ->afterStateUpdated(fn($set) => $set('category', null)),
+                        ->default('income'),
 
-                    DatePicker::make('transaction_date')
-                        ->label('Date / তারিখ')
-                        ->required()
-                        ->default(now()),
-                ]),
-
-                Grid::make(2)->schema([
                     Select::make('category')
-                        ->label('Category / বিভাগ')
-                        ->required()
-                        ->options(fn($get) => $get('type') === 'expense'
-                            ? AccountTransaction::expenseCategoryOptions()
-                            : AccountTransaction::incomeCategoryOptions()
-                        )
-                        ->searchable(),
-
-                    TextInput::make('sub_category')
-                        ->label('Sub-Category / উপ-বিভাগ')
-                        ->placeholder('e.g. January Salary'),
+                        ->label('বিভাগ (Category)')
+                        ->options(AccountTransaction::categories())
+                        ->default('hall_rental')
+                        ->required(),
                 ]),
+            ]),
 
+            Section::make('পরিমাণ / Amounts')->schema([
+                Grid::make(4)->schema([
+                    TextInput::make('income_amount')
+                        ->label('আয়/জমা (Income ৳)')
+                        ->numeric()->prefix('৳')->default(0),
+
+                    TextInput::make('expense_amount')
+                        ->label('ব্যয়/উত্তোলন (Expense ৳)')
+                        ->numeric()->prefix('৳')->default(0),
+
+                    TextInput::make('electricity_bill')
+                        ->label('বিদ্যুৎ বিল (Electricity ৳)')
+                        ->numeric()->prefix('৳')->default(0),
+
+                    TextInput::make('refund_amount')
+                        ->label('ফেরত (Refund ৳)')
+                        ->numeric()->prefix('৳')->default(0),
+                ]),
+            ]),
+
+            Section::make('ব্যাংক/চেক তথ্য / Bank & Cheque')->schema([
                 Grid::make(3)->schema([
-                    TextInput::make('amount')
-                        ->label('Amount (৳) / পরিমাণ')
-                        ->numeric()
-                        ->required()
-                        ->prefix('৳')
-                        ->minValue(0.01),
-
                     Select::make('payment_method')
-                        ->label('Payment Method / পদ্ধতি')
+                        ->label('পদ্ধতি (Method)')
                         ->options([
                             'cash'           => 'Cash / নগদ',
                             'cheque'         => 'Cheque / চেক',
-                            'bank_transfer'  => 'Bank Transfer / ব্যাংক ট্রান্সফার',
-                            'mobile_banking' => 'Mobile Banking / মোবাইল ব্যাংকিং',
-                            'other'          => 'Other / অন্যান্য',
+                            'bank_transfer'  => 'Bank Transfer',
+                            'mobile_banking' => 'Mobile Banking',
+                            'other'          => 'Other',
                         ])
-                        ->default('cash')
-                        ->required()
-                        ->live(),
+                        ->default('cash'),
 
-                    TextInput::make('voucher_number')
-                        ->label('Voucher No. / ভাউচার নং')
-                        ->placeholder('Auto-generated if empty')
-                        ->unique(ignoreRecord: true),
+                    TextInput::make('cheque_number')
+                        ->label('চেক নম্বর (Cheque No.)'),
+
+                    TextInput::make('cheque_serial')
+                        ->label('সিরিয়াল নং (Serial No.)'),
                 ]),
 
                 Grid::make(2)->schema([
                     TextInput::make('bank_name')
-                        ->label('Bank Name / ব্যাংকের নাম')
-                        ->visible(fn($get) => in_array($get('payment_method'), ['cheque','bank_transfer'])),
+                        ->label('ব্যাংকের নাম (Bank Name)'),
 
-                    TextInput::make('cheque_number')
-                        ->label('Cheque No. / চেক নং')
-                        ->visible(fn($get) => $get('payment_method') === 'cheque'),
+                    TextInput::make('bank_deposit_details')
+                        ->label('ব্যাংক জমার বিবরণ (Bank Deposit Details)'),
                 ]),
             ]),
 
-            Section::make('Additional Info / অতিরিক্ত তথ্য')->schema([
-                Grid::make(2)->schema([
-                    TextInput::make('reference_number')
-                        ->label('Reference No. / রেফারেন্স'),
-
-                    TextInput::make('approved_by')
-                        ->label('Approved By / অনুমোদনকারী'),
-                ]),
-
+            Section::make('অতিরিক্ত তথ্য / Additional')->schema([
                 Textarea::make('description')
-                    ->label('Description / বিবরণ')
+                    ->label('বিবরণ (Description)')
                     ->rows(2),
 
-                Textarea::make('remarks')
-                    ->label('Remarks / মন্তব্য')
-                    ->rows(2),
+                Grid::make(2)->schema([
+                    TextInput::make('approved_by')
+                        ->label('অনুমোদনকারী (Approved By)'),
 
-                FileUpload::make('attachment')
-                    ->label('Attachment / সংযুক্তি')
-                    ->disk('public')
-                    ->directory('accounts/attachments')
-                    ->acceptedFileTypes(['image/jpeg','image/png','application/pdf'])
-                    ->maxSize(5120),
+                    FileUpload::make('attachment')
+                        ->label('সংযুক্তি (Attachment)')
+                        ->disk('public')
+                        ->directory('accounts/attachments')
+                        ->acceptedFileTypes(['image/jpeg','image/png','application/pdf'])
+                        ->maxSize(5120),
+                ]),
             ]),
         ]);
     }
@@ -135,105 +139,139 @@ class AccountTransactionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('voucher_number')
-                    ->label('Voucher')
-                    ->searchable()
-                    ->copyable()
-                    ->fontFamily('mono'),
+                TextColumn::make('id')
+                    ->label('ক্রঃ নং')
+                    ->sortable()
+                    ->width(60),
 
-                TextColumn::make('transaction_date')
-                    ->label('Date / তারিখ')
-                    ->date('d M Y')
+                TextColumn::make('deposit_date')
+                    ->label('জমা তারিখ')
+                    ->date('d-m-Y')
                     ->sortable(),
 
-                TextColumn::make('type')
-                    ->label('Type')
-                    ->badge()
-                    ->color(fn($state) => $state === 'income' ? 'success' : 'danger')
-                    ->formatStateUsing(fn($state) => $state === 'income' ? '⬆ Income' : '⬇ Expense'),
-
-                TextColumn::make('category')
-                    ->label('Category / বিভাগ')
-                    ->formatStateUsing(fn($state) => AccountTransaction::incomeCategoryOptions()[$state]
-                        ?? AccountTransaction::expenseCategoryOptions()[$state]
-                        ?? $state)
-                    ->searchable(),
-
-                TextColumn::make('sub_category')
-                    ->label('Sub-Category')
+                TextColumn::make('event_date')
+                    ->label('অনুষ্ঠান তারিখ')
+                    ->date('d-m-Y')
                     ->placeholder('—'),
 
-                TextColumn::make('amount')
-                    ->label('Amount / পরিমাণ')
-                    ->formatStateUsing(fn($state) => '৳ ' . number_format($state, 2))
-                    ->sortable()
-                    ->color(fn($record) => $record->type === 'income' ? 'success' : 'danger')
+                TextColumn::make('type')
+                    ->label('ধরন')
+                    ->badge()
+                    ->color(fn($state) => $state === 'income' ? 'success' : 'danger')
+                    ->formatStateUsing(fn($state) => $state === 'income' ? '⬆ আয়' : '⬇ ব্যয়'),
+
+                TextColumn::make('income_amount')
+                    ->label('আয়/জমা ৳')
+                    ->formatStateUsing(fn($state) => $state > 0 ? '৳ ' . number_format($state, 0) : '—')
+                    ->color('success')
                     ->weight('bold'),
 
-                TextColumn::make('payment_method')
-                    ->label('Method')
-                    ->badge()
-                    ->color('gray')
-                    ->formatStateUsing(fn($state) => match($state) {
-                        'cash'           => 'Cash',
-                        'cheque'         => 'Cheque',
-                        'bank_transfer'  => 'Bank Transfer',
-                        'mobile_banking' => 'Mobile Banking',
-                        default          => 'Other',
-                    }),
+                TextColumn::make('expense_amount')
+                    ->label('ব্যয়/উত্তোলন ৳')
+                    ->formatStateUsing(fn($state) => $state > 0 ? '৳ ' . number_format($state, 0) : '—')
+                    ->color('danger')
+                    ->weight('bold'),
 
-                TextColumn::make('approved_by')
-                    ->label('Approved By')
+                TextColumn::make('electricity_bill')
+                    ->label('বিদ্যুৎ বিল ৳')
+                    ->formatStateUsing(fn($state) => $state > 0 ? '৳ ' . number_format($state, 0) : '—')
+                    ->color('warning'),
+
+                TextColumn::make('cheque_number')
+                    ->label('চেক নং')
+                    ->placeholder('—'),
+
+                TextColumn::make('cheque_serial')
+                    ->label('সিরিয়াল নং')
+                    ->placeholder('—'),
+
+                TextColumn::make('refund_amount')
+                    ->label('ফেরত ৳')
+                    ->formatStateUsing(fn($state) => $state > 0 ? '৳ ' . number_format($state, 0) : '—')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('bank_deposit_details')
+                    ->label('ব্যাংক বিবরণ')
+                    ->limit(30)
                     ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('created_at')
-                    ->label('Entry Date')
-                    ->dateTime('d M Y H:i')
-                    ->sortable()
+                TextColumn::make('description')
+                    ->label('বিবরণ')
+                    ->limit(35)
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('voucher_number')
+                    ->label('ভাউচার')
+                    ->fontFamily('mono')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('transaction_date', 'desc')
+            ->defaultSort('deposit_date', 'desc')
             ->filters([
                 SelectFilter::make('type')
                     ->label('Type')
+                    ->options(['income' => 'Income / আয়', 'expense' => 'Expense / ব্যয়']),
+
+                SelectFilter::make('month')
+                    ->label('Month / মাস')
                     ->options([
-                        'income'  => 'Income / আয়',
-                        'expense' => 'Expense / ব্যয়',
+                        1=>'January',2=>'February',3=>'March',4=>'April',
+                        5=>'May',6=>'June',7=>'July',8=>'August',
+                        9=>'September',10=>'October',11=>'November',12=>'December',
                     ]),
 
-                SelectFilter::make('payment_method')
-                    ->label('Payment Method')
-                    ->options([
-                        'cash'           => 'Cash',
-                        'cheque'         => 'Cheque',
-                        'bank_transfer'  => 'Bank Transfer',
-                        'mobile_banking' => 'Mobile Banking',
-                    ]),
-
-                Filter::make('this_month')
-                    ->label('This Month / এই মাস')
-                    ->query(fn(Builder $q) => $q->whereMonth('transaction_date', now()->month)->whereYear('transaction_date', now()->year))
-                    ->toggle(),
-
-                Filter::make('this_year')
-                    ->label('This Year / এই বছর')
-                    ->query(fn(Builder $q) => $q->whereYear('transaction_date', now()->year))
-                    ->toggle(),
+                SelectFilter::make('year')
+                    ->label('Year / বছর')
+                    ->options(array_combine(
+                        range(now()->year, now()->year - 5),
+                        range(now()->year, now()->year - 5)
+                    )),
 
                 Filter::make('date_range')
                     ->form([
                         DatePicker::make('from')->label('From / থেকে'),
                         DatePicker::make('until')->label('Until / পর্যন্ত'),
                     ])
-                    ->query(function (Builder $q, array $data) {
-                        return $q
-                            ->when($data['from'], fn($q) => $q->whereDate('transaction_date', '>=', $data['from']))
-                            ->when($data['until'], fn($q) => $q->whereDate('transaction_date', '<=', $data['until']));
+                    ->query(fn(Builder $q, array $data) => $q
+                        ->when($data['from'], fn($q) => $q->whereDate('deposit_date', '>=', $data['from']))
+                        ->when($data['until'], fn($q) => $q->whereDate('deposit_date', '<=', $data['until']))
+                    ),
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('monthly_pdf')
+                    ->label('📄 Monthly PDF')
+                    ->color('danger')
+                    ->form([
+                        Grid::make(2)->schema([
+                            Select::make('month')
+                                ->label('Month / মাস')
+                                ->options([
+                                    1=>'January / জানুয়ারি',2=>'February / ফেব্রুয়ারি',
+                                    3=>'March / মার্চ',4=>'April / এপ্রিল',
+                                    5=>'May / মে',6=>'June / জুন',
+                                    7=>'July / জুলাই',8=>'August / আগস্ট',
+                                    9=>'September / সেপ্টেম্বর',10=>'October / অক্টোবর',
+                                    11=>'November / নভেম্বর',12=>'December / ডিসেম্বর',
+                                ])
+                                ->default(now()->month)
+                                ->required(),
+                            Select::make('year')
+                                ->label('Year / বছর')
+                                ->options(array_combine(
+                                    range(now()->year, now()->year - 5),
+                                    range(now()->year, now()->year - 5)
+                                ))
+                                ->default(now()->year)
+                                ->required(),
+                        ]),
+                    ])
+                    ->action(function (array $data) {
+                        $url = route('admin.accounts.pdf', ['month' => $data['month'], 'year' => $data['year']]);
+                        $this->redirect($url, navigate: false);
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -242,7 +280,6 @@ class AccountTransactionResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->headerActions([])
             ->striped()
             ->paginated([25, 50, 100]);
     }
@@ -252,7 +289,6 @@ class AccountTransactionResource extends Resource
         return [
             'index'  => Pages\ListAccountTransactions::route('/'),
             'create' => Pages\CreateAccountTransaction::route('/create'),
-            'view'   => Pages\ViewAccountTransaction::route('/{record}'),
             'edit'   => Pages\EditAccountTransaction::route('/{record}/edit'),
         ];
     }

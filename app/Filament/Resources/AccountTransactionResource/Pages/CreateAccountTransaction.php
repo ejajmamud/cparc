@@ -13,7 +13,7 @@ class CreateAccountTransaction extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         if (empty($data['voucher_number'])) {
-            $data['voucher_number'] = AccountTransaction::generateVoucher($data['type']);
+            $data['voucher_number'] = AccountTransaction::generateVoucher();
         }
         $data['created_by'] = auth()->id();
         return $data;
