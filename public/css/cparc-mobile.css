@@ -6,6 +6,7 @@
 @media (max-width: 1000px) {
   .cprc-home-wrapper { flex-direction: column; padding: var(--spacing-medium); gap: var(--spacing-medium); }
   .cprc-sidebar-col { flex: none; width: 100%; }
+  .cprc-gallery-section { margin-right: 0; }
   .cprc-sidebar-persons-row { flex-direction: row; gap: var(--spacing-medium); }
   .cprc-sidebar-persons-row .cprc-sidebar-widget { flex: 1; margin-bottom: 0; }
   .cprc-pkg-grid { grid-template-columns: repeat(3, 1fr); }
